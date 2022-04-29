@@ -1,0 +1,11 @@
+[OPTIONS]
+CONTENTS=IDH_110
+REPORT=YES
+CNT=D:\borland\projets\lpclearn\helpfile\lpclearn.cnt
+LCID=0x80C 0x0 ; French - (Belgium)
+TITLE=LPCLEARN help file
+NOTES=NO
+[FILES]
+D:\borland\projets\lpclearn\helpfile\lpclearn.rtf
+[WINDOWS]
+main="LPCLEARN Help File",(601,18,410,641),27904,(r11206655),(r12632256),f3
