@@ -285,7 +285,7 @@ public class FullscreenActivity extends AppCompatActivity {
         buttonFreqinc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (llop.pitchVal <= 1000.0) llop.pitchVal += 1;
+                if (llop.pitchVal <= 300.0) llop.pitchVal += 1;
                 tvFreq.setText(String.format("%f",llop.pitchVal));
                 seekBarFreq.setProgress((int)llop.pitchVal);
             }
@@ -1751,6 +1751,7 @@ public class FullscreenActivity extends AppCompatActivity {
     public void LPCLearn_start(){
         initPlotImageView();
         LPCLearn_output_start();
+        LPCLearn_input_start();
     }
 
     public void LPCLearn_input_start(){
