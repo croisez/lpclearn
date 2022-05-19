@@ -28,6 +28,8 @@ public class LpcLearnOutputProcessor {
 	public Complex[] roots = new Complex[2 * norder];
 	private double[] Atcr = new double[norder];
 	public double[] ki = new double[norder];
+	public double[] ki_undo = new double[norder];
+	public double[] ki_swap = new double[norder];
 	public double[] ai = new double[norder+1];
 	private double[] zi = new double[norder];
 	private double[] kimem = new double[norder];
@@ -123,6 +125,7 @@ public class LpcLearnOutputProcessor {
 						if (pitchVal * (double) iphase >= m_sampleRate) iphase = 0;
 						x[i] = 0;
 						if (iphase == 0) x[i] = 1;
+						//x[i] = Math.sin(2 * Math.PI * pitchVal * iphase / m_sampleRate);
 					} else {
 						x[i] = rnd.nextDouble() * 2 - 1;
 					}
@@ -166,6 +169,7 @@ public class LpcLearnOutputProcessor {
 	};
 
 	private void precomputeHammingWindow(int windowSize) {
+		//TODO: add computation of hamming impact on signal energy
 		for (int i = 0; i < windowSize; i++) {
 			ham[i] = 0.54d - (0.46d * Math.cos((2 * Math.PI * i) / (windowSize - 1)));
 		}
@@ -438,6 +442,58 @@ public class LpcLearnOutputProcessor {
 			}
 			K++;
 		}
+	}
+
+	void recallUndo2Ki() {
+		ki[0] = ki_undo[0];
+		ki[1] = ki_undo[1];
+		ki[2] = ki_undo[2];
+		ki[3] = ki_undo[3];
+		ki[4] = ki_undo[4];
+		ki[5] = ki_undo[5];
+		ki[6] = ki_undo[6];
+		ki[7] = ki_undo[7];
+		ki[8] = ki_undo[8];
+		ki[9] = ki_undo[9];
+	}
+
+	void saveKi2Undo() {
+		ki_undo[0] = ki[0];
+		ki_undo[1] = ki[1];
+		ki_undo[2] = ki[2];
+		ki_undo[3] = ki[3];
+		ki_undo[4] = ki[4];
+		ki_undo[5] = ki[5];
+		ki_undo[6] = ki[6];
+		ki_undo[7] = ki[7];
+		ki_undo[8] = ki[8];
+		ki_undo[9] = ki[9];
+	}
+
+	void saveKi2Swap() {
+		ki_swap[0] = ki[0];
+		ki_swap[1] = ki[1];
+		ki_swap[2] = ki[2];
+		ki_swap[3] = ki[3];
+		ki_swap[4] = ki[4];
+		ki_swap[5] = ki[5];
+		ki_swap[6] = ki[6];
+		ki_swap[7] = ki[7];
+		ki_swap[8] = ki[8];
+		ki_swap[9] = ki[9];
+	}
+
+	void saveSwap2Undo() {
+		ki_undo[0] = ki_swap[0];
+		ki_undo[1] = ki_swap[1];
+		ki_undo[2] = ki_swap[2];
+		ki_undo[3] = ki_swap[3];
+		ki_undo[4] = ki_swap[4];
+		ki_undo[5] = ki_swap[5];
+		ki_undo[6] = ki_swap[6];
+		ki_undo[7] = ki_swap[7];
+		ki_undo[8] = ki_swap[8];
+		ki_undo[9] = ki_swap[9];
 	}
 
 	void ai2ki() {

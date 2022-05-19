@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -31,6 +32,8 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -1235,32 +1238,32 @@ public class FullscreenActivity extends AppCompatActivity {
         refreshKiOnGui();
         refreshAiOnGui();
 
-        Button buttonRandomKi = (Button) findViewById(R.id.buttonRandomKi);
-        buttonRandomKi.setOnClickListener(new View.OnClickListener(){
+        Button buttonKiReset = (Button) findViewById(R.id.buttonKiReset);
+        buttonKiReset.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                Double min = -0.999999;
-                Double max = 1.0;
+                llop.saveKi2Undo();
 
-                llop.ki[0] = ThreadLocalRandom.current().nextDouble(min, max);
+                llop.ki[0] = 0.0;
+                llop.ki[1] = 0.0;
+                llop.ki[2] = 0.0;
+                llop.ki[3] = 0.0;
+                llop.ki[4] = 0.0;
+                llop.ki[5] = 0.0;
+                llop.ki[6] = 0.0;
+                llop.ki[7] = 0.0;
+                llop.ki[8] = 0.0;
+                llop.ki[9] = 0.0;
+
                 tvK0.setText(String.format("K0=%f", llop.ki[0]));
-                llop.ki[1] = ThreadLocalRandom.current().nextDouble(min, max);
                 tvK1.setText(String.format("K1=%f", llop.ki[1]));
-                llop.ki[2] = ThreadLocalRandom.current().nextDouble(min, max);
                 tvK2.setText(String.format("K2=%f", llop.ki[2]));
-                llop.ki[3] = ThreadLocalRandom.current().nextDouble(min, max);
                 tvK3.setText(String.format("K3=%f", llop.ki[3]));
-                llop.ki[4] = ThreadLocalRandom.current().nextDouble(min, max);
                 tvK4.setText(String.format("K4=%f", llop.ki[4]));
-                llop.ki[5] = ThreadLocalRandom.current().nextDouble(min, max);
                 tvK5.setText(String.format("K5=%f", llop.ki[5]));
-                llop.ki[6] = ThreadLocalRandom.current().nextDouble(min, max);
                 tvK6.setText(String.format("K6=%f", llop.ki[6]));
-                llop.ki[7] = ThreadLocalRandom.current().nextDouble(min, max);
                 tvK7.setText(String.format("K7=%f", llop.ki[7]));
-                llop.ki[8] = ThreadLocalRandom.current().nextDouble(min, max);
                 tvK8.setText(String.format("K8=%f", llop.ki[8]));
-                llop.ki[9] = ThreadLocalRandom.current().nextDouble(min, max);
                 tvK9.setText(String.format("K9=%f", llop.ki[9]));
 
                 llop.ki2ai();
@@ -1302,7 +1305,150 @@ public class FullscreenActivity extends AppCompatActivity {
                 seekBarA9.setProgress((int)(Math.round(llop.ai[9]*100))+100);
                 seekBarA10.setProgress((int)(Math.round(llop.ai[10]*100))+100);
 
-                return;
+                Snackbar.make(view, "Resetting parameters values", Snackbar.LENGTH_SHORT)
+                        .setAction("No action", null).show();
+            }
+        });
+
+        Button buttonKiRandom = (Button) findViewById(R.id.buttonKiRandom);
+        buttonKiRandom.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Double min = -0.999999;
+                Double max = 1.0;
+
+                llop.saveKi2Undo();
+
+                llop.ki[0] = ThreadLocalRandom.current().nextDouble(min, max);
+                llop.ki[1] = ThreadLocalRandom.current().nextDouble(min, max);
+                llop.ki[2] = ThreadLocalRandom.current().nextDouble(min, max);
+                llop.ki[3] = ThreadLocalRandom.current().nextDouble(min, max);
+                llop.ki[4] = ThreadLocalRandom.current().nextDouble(min, max);
+                llop.ki[5] = ThreadLocalRandom.current().nextDouble(min, max);
+                llop.ki[6] = ThreadLocalRandom.current().nextDouble(min, max);
+                llop.ki[7] = ThreadLocalRandom.current().nextDouble(min, max);
+                llop.ki[8] = ThreadLocalRandom.current().nextDouble(min, max);
+                llop.ki[9] = ThreadLocalRandom.current().nextDouble(min, max);
+
+                tvK0.setText(String.format("K0=%f", llop.ki[0]));
+                tvK1.setText(String.format("K1=%f", llop.ki[1]));
+                tvK2.setText(String.format("K2=%f", llop.ki[2]));
+                tvK3.setText(String.format("K3=%f", llop.ki[3]));
+                tvK4.setText(String.format("K4=%f", llop.ki[4]));
+                tvK5.setText(String.format("K5=%f", llop.ki[5]));
+                tvK6.setText(String.format("K6=%f", llop.ki[6]));
+                tvK7.setText(String.format("K7=%f", llop.ki[7]));
+                tvK8.setText(String.format("K8=%f", llop.ki[8]));
+                tvK9.setText(String.format("K9=%f", llop.ki[9]));
+
+                llop.ki2ai();
+
+                tvA0.setText(String.format("A0=%f", llop.ai[0]));
+                tvA1.setText(String.format("A1=%f", llop.ai[1]));
+                tvA2.setText(String.format("A2=%f", llop.ai[2]));
+                tvA3.setText(String.format("A3=%f", llop.ai[3]));
+                tvA4.setText(String.format("A4=%f", llop.ai[4]));
+                tvA5.setText(String.format("A5=%f", llop.ai[5]));
+                tvA6.setText(String.format("A6=%f", llop.ai[6]));
+                tvA7.setText(String.format("A7=%f", llop.ai[7]));
+                tvA8.setText(String.format("A8=%f", llop.ai[8]));
+                tvA9.setText(String.format("A9=%f", llop.ai[9]));
+                tvA10.setText(String.format("A10=%f", llop.ai[10]));
+
+                drawUnitCircleOnImageView();
+
+                seekBarK0.setProgress((int)(Math.round(llop.ki[0]*100))+100);
+                seekBarK1.setProgress((int)(Math.round(llop.ki[1]*100))+100);
+                seekBarK2.setProgress((int)(Math.round(llop.ki[2]*100))+100);
+                seekBarK3.setProgress((int)(Math.round(llop.ki[3]*100))+100);
+                seekBarK4.setProgress((int)(Math.round(llop.ki[4]*100))+100);
+                seekBarK5.setProgress((int)(Math.round(llop.ki[5]*100))+100);
+                seekBarK6.setProgress((int)(Math.round(llop.ki[6]*100))+100);
+                seekBarK7.setProgress((int)(Math.round(llop.ki[7]*100))+100);
+                seekBarK8.setProgress((int)(Math.round(llop.ki[8]*100))+100);
+                seekBarK9.setProgress((int)(Math.round(llop.ki[9]*100))+100);
+
+                seekBarA0.setProgress((int)(Math.round(llop.ai[0]*100))+100);
+                seekBarA1.setProgress((int)(Math.round(llop.ai[1]*100))+100);
+                seekBarA2.setProgress((int)(Math.round(llop.ai[2]*100))+100);
+                seekBarA3.setProgress((int)(Math.round(llop.ai[3]*100))+100);
+                seekBarA4.setProgress((int)(Math.round(llop.ai[4]*100))+100);
+                seekBarA5.setProgress((int)(Math.round(llop.ai[5]*100))+100);
+                seekBarA6.setProgress((int)(Math.round(llop.ai[6]*100))+100);
+                seekBarA7.setProgress((int)(Math.round(llop.ai[7]*100))+100);
+                seekBarA8.setProgress((int)(Math.round(llop.ai[8]*100))+100);
+                seekBarA9.setProgress((int)(Math.round(llop.ai[9]*100))+100);
+                seekBarA10.setProgress((int)(Math.round(llop.ai[10]*100))+100);
+
+                Snackbar.make(view, "Randomizing parameters values", Snackbar.LENGTH_SHORT)
+                        .setAction("No action", null).show();
+            }
+        });
+
+        Button buttonKiMR = (Button) findViewById(R.id.buttonKiMR);
+        buttonKiMR.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                llop.saveKi2Undo();
+
+                SharedPreferences settings = getSharedPreferences("lpclearn", MODE_PRIVATE);
+                llop.ki[0] = settings.getFloat("ki0", 0.0f);
+                llop.ki[1] = settings.getFloat("ki1", 0.0f);
+                llop.ki[2] = settings.getFloat("ki2", 0.0f);
+                llop.ki[3] = settings.getFloat("ki3", 0.0f);
+                llop.ki[4] = settings.getFloat("ki4", 0.0f);
+                llop.ki[5] = settings.getFloat("ki5", 0.0f);
+                llop.ki[6] = settings.getFloat("ki6", 0.0f);
+                llop.ki[7] = settings.getFloat("ki7", 0.0f);
+                llop.ki[8] = settings.getFloat("ki8", 0.0f);
+                llop.ki[9] = settings.getFloat("ki9", 0.0f);
+
+                refreshKiOnGui();
+                llop.ki2ai();
+                refreshAiOnGui();
+                Snackbar.make(view, "Parameters recalled", Snackbar.LENGTH_SHORT)
+                        .setAction("No action", null).show();
+            }
+        });
+
+        Button buttonKiMS = (Button) findViewById(R.id.buttonKiMS);
+        buttonKiMS.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                SharedPreferences settings = getSharedPreferences("lpclearn", MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("url", "");
+                editor.putFloat("ki0", (float)llop.ki[0]);
+                editor.putFloat("ki1", (float)llop.ki[1]);
+                editor.putFloat("ki2", (float)llop.ki[2]);
+                editor.putFloat("ki3", (float)llop.ki[3]);
+                editor.putFloat("ki4", (float)llop.ki[4]);
+                editor.putFloat("ki5", (float)llop.ki[5]);
+                editor.putFloat("ki6", (float)llop.ki[6]);
+                editor.putFloat("ki7", (float)llop.ki[7]);
+                editor.putFloat("ki8", (float)llop.ki[8]);
+                editor.putFloat("ki9", (float)llop.ki[9]);
+                editor.apply();
+
+                Snackbar.make(view, "Parameters memorized", Snackbar.LENGTH_SHORT)
+                        .setAction("No action", null).show();
+            }
+        });
+
+        Button buttonKiUndo = (Button) findViewById(R.id.buttonKiUndo);
+        buttonKiUndo.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                llop.saveKi2Swap();
+                llop.recallUndo2Ki();
+                llop.saveSwap2Undo();
+
+                refreshKiOnGui();
+                llop.ki2ai();
+                refreshAiOnGui();
+
+                Snackbar.make(view, "Undoing parameters change", Snackbar.LENGTH_SHORT)
+                        .setAction("No action", null).show();
             }
         });
 
@@ -1738,14 +1884,12 @@ public class FullscreenActivity extends AppCompatActivity {
             case 1: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     Log.d("Activity", "Granted!");
                     LPCLearn_start();
 
                 } else {
-
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Log.d("Activity", "Denied!");
@@ -1766,7 +1910,7 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     public void LPCLearn_input_start(){
-        AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
+        AudioDispatcher dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(8000,512,0);
 
         LpcHandler lpcHandler = new LpcHandler() {
             @Override
@@ -1789,7 +1933,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
 
     public void LPCLearn_output_start(){
-        //llop.play();
+        //llop.play(); //Useful to auto-start playing on application start
     }
 
     private void toggle() {

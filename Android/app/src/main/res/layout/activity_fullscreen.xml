@@ -75,8 +75,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="Win32 version 1999, Android version 2019  "
+                    android:text="Win32 version 1999, Android version 2022  "
                     android:textSize="8sp" />
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text="https://github.com/croisez/lpclearn  "
+                    android:textSize="8sp" />
+
 
 
 
@@ -301,13 +309,47 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Ki values" />
-                <Button
-                    android:id="@+id/buttonRandomKi"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:text="Random Ki values"
-                    android:textSize="10sp" />
+                <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/buttonKiReset"
+                        android:layout_width="80dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="Reset"
+                        android:textSize="8sp" />
+                    <Button
+                        android:id="@+id/buttonKiRandom"
+                        android:layout_width="80dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="Random"
+                        android:textSize="8sp" />
+                    <Button
+                        android:id="@+id/buttonKiMR"
+                        android:layout_width="80dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="MR"
+                        android:textSize="8sp" />
+                    <Button
+                        android:id="@+id/buttonKiMS"
+                        android:layout_width="80dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="MS"
+                        android:textSize="8sp" />
+                    <Button
+                        android:id="@+id/buttonKiUndo"
+                        android:layout_width="80dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="Undo"
+                        android:textSize="8sp" />
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
