@@ -1428,6 +1428,9 @@ public class FullscreenActivity extends AppCompatActivity {
         });
     }
 
+    double vv_max = -10.0;
+    double vv_min = 10.0;
+
     private void drawFFTOnImageView(){
         Paint paint = new Paint();
         paint.setDither(true);
@@ -1440,14 +1443,22 @@ public class FullscreenActivity extends AppCompatActivity {
         Bitmap mutableBitmap = immutableBitmap.copy(Bitmap.Config.ARGB_8888, true);
         Canvas canvas = new Canvas(mutableBitmap);
 
+        int cw = canvas.getWidth();
+        int ch = canvas.getHeight();
+
         for (int i=0; i<llop.frameSize/2; i++){
             double v = Math.sqrt( llop.y_out.x[i] * llop.y_out.x[i] + llop.y_out.y[i] * llop.y_out.y[i] );
             double vv = 0.0;
             if (v != 0 ) vv = Math.log(v);
 
-            int h = (int) Math.round(canvas.getHeight() / 5 * vv);
-            int f = (int) ((double)canvas.getWidth() * (double)i * 2.0 / (double)llop.frameSize);
-            canvas.drawLine(f, canvas.getHeight(), f, canvas.getHeight() - h, paint);
+            if (vv > vv_max) vv_max = vv;
+            if (vv < vv_min) vv_min = vv;
+
+            double vv_shifted = vv + 7.0;
+
+            int h = (int) Math.round(ch * vv_shifted / 20);
+            int f = (int) ((double)cw * (double)i * 2.0 / (double)llop.frameSize);
+            canvas.drawLine(f, ch, f, ch - h, paint);
         }
 
         canvas.drawBitmap(mutableBitmap, immutableBitmap.getWidth(), immutableBitmap.getHeight(), paint);
