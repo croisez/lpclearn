@@ -40,6 +40,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
+import be.tarsos.dsp.pitch.PitchDetectionResult;
 import ca.uol.aig.fftpack.Complex1D;
 
 
@@ -1840,17 +1841,16 @@ public class FullscreenActivity extends AppCompatActivity {
 
         LpcHandler lpcHandler = new LpcHandler() {
             @Override
-            public void handlePitch(
+            public void handleAudioInput(
                     final double SigmaAutocorr,
                     final double[] parcor,
                     final float[] audioFloatBuffer,
                     final Complex1D y_out,
-                    AudioEvent e) {
+                    final AudioEvent e) {
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //TextView text = (TextView) findViewById(R.id.tvPitch);
                         //text.setText(String.format("min=%f max=%f", lpc_array[0], lpc_array[1]));
                         for (int i=0; i < llop.norder; i++) llop.ki[i] = parcor[i];
                         for (int i=0; i < llop.frameSize; i++) llop.y[i] = (double) audioFloatBuffer[i];
@@ -1882,6 +1882,24 @@ public class FullscreenActivity extends AppCompatActivity {
                                 //drawUnitCircleOnImageView();
                                 break;
                         }
+                    }
+                });
+            }
+
+            @Override
+            public void handlePitch(
+                    final PitchDetectionResult pitchDetectionResult,
+                    final AudioEvent e) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //double timeStamp = e.getTimeStamp();
+                        float pitch = pitchDetectionResult.getPitch();
+                        float probability = pitchDetectionResult.getProbability();
+                        double rms = e.getRMS() * 100;
+                        TextView tvFreq = (TextView) findViewById(R.id.tvFreq);
+                        tvFreq.setText(String.format("Pitch %.2fHz (%.2f probability, RMS: %.5f)", pitch, probability, rms));
                     }
                 });
             }

@@ -4,11 +4,13 @@ import android.util.Log;
 
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
+import be.tarsos.dsp.pitch.PitchDetectionHandler;
+import be.tarsos.dsp.pitch.PitchDetectionResult;
 import ca.uol.aig.fftpack.Complex1D;
 import ca.uol.aig.fftpack.RealDoubleFFT;
 
 
-public class LpcLearnInputProcessor implements AudioProcessor {
+public class LpcLearnInputProcessor implements AudioProcessor, PitchDetectionHandler {
 	
 	private final LpcHandler handler;
 	public static boolean m_stop = true;
@@ -56,7 +58,7 @@ public class LpcLearnInputProcessor implements AudioProcessor {
 			for (int i = 0; i < frameSize; i++) y_in[i] = (double) audioFloatBuffer[i] * ham[i];
 			realDoubleFFT.ft(y_in, y_out);
 
-			handler.handlePitch(SigmaAutocorr, ki, audioFloatBuffer, y_out, audioEvent);
+			handler.handleAudioInput(SigmaAutocorr, ki, audioFloatBuffer, y_out, audioEvent);
 		}
 		return true;
 	}
@@ -65,9 +67,11 @@ public class LpcLearnInputProcessor implements AudioProcessor {
 	public void processingFinished() {
 	}
 
-	//Calculate the autocorrelation sequence and the ki
-	public void calculateSchur() {
-
+	@Override
+	public void handlePitch(PitchDetectionResult pitchDetectionResult, AudioEvent audioEvent) {
+		if (pitchDetectionResult.getPitch() != -1) {
+			handler.handlePitch(pitchDetectionResult, audioEvent);
+		}
 	}
 
 	public void Autocorr()
@@ -116,21 +120,5 @@ public class LpcLearnInputProcessor implements AudioProcessor {
 		}
 
 		SigmaAutocorr = u[0];
-	}
-
-	void ki2ai()
-	{
-		//Computes the Prediction coefficients ai(0..Order) from the
-		//PARCOR coefficients ki(0..Order - 1).
-		double[] aint = new double[norder + 1];
-
-		aint[0] = 1.0;
-		for (int i=1; i < norder + 1; i++) aint[i] = 0.0;
-		for (int m=1; m < norder + 1; m++) {
-			ai[0] = 1.0;
-			for (int i=1; i<m; i++) ai[i] = aint[i]+ki[m - 1]*aint[m - i];
-			ai[m] = ki[m - 1];
-			for (int i=1; i < norder + 1; i++) aint[i] = ai[i];
-		}
 	}
 }
