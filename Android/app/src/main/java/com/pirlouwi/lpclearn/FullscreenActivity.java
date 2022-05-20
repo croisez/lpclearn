@@ -40,6 +40,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
+import ca.uol.aig.fftpack.Complex1D;
 
 
 /**
@@ -1255,55 +1256,11 @@ public class FullscreenActivity extends AppCompatActivity {
                 llop.ki[8] = 0.0;
                 llop.ki[9] = 0.0;
 
-                tvK0.setText(String.format("K0=%f", llop.ki[0]));
-                tvK1.setText(String.format("K1=%f", llop.ki[1]));
-                tvK2.setText(String.format("K2=%f", llop.ki[2]));
-                tvK3.setText(String.format("K3=%f", llop.ki[3]));
-                tvK4.setText(String.format("K4=%f", llop.ki[4]));
-                tvK5.setText(String.format("K5=%f", llop.ki[5]));
-                tvK6.setText(String.format("K6=%f", llop.ki[6]));
-                tvK7.setText(String.format("K7=%f", llop.ki[7]));
-                tvK8.setText(String.format("K8=%f", llop.ki[8]));
-                tvK9.setText(String.format("K9=%f", llop.ki[9]));
-
+                refreshKiOnGui();
                 llop.ki2ai();
-
-                tvA0.setText(String.format("A0=%f", llop.ai[0]));
-                tvA1.setText(String.format("A1=%f", llop.ai[1]));
-                tvA2.setText(String.format("A2=%f", llop.ai[2]));
-                tvA3.setText(String.format("A3=%f", llop.ai[3]));
-                tvA4.setText(String.format("A4=%f", llop.ai[4]));
-                tvA5.setText(String.format("A5=%f", llop.ai[5]));
-                tvA6.setText(String.format("A6=%f", llop.ai[6]));
-                tvA7.setText(String.format("A7=%f", llop.ai[7]));
-                tvA8.setText(String.format("A8=%f", llop.ai[8]));
-                tvA9.setText(String.format("A9=%f", llop.ai[9]));
-                tvA10.setText(String.format("A10=%f", llop.ai[10]));
+                refreshAiOnGui();
 
                 drawUnitCircleOnImageView();
-
-                seekBarK0.setProgress((int)(Math.round(llop.ki[0]*100))+100);
-                seekBarK1.setProgress((int)(Math.round(llop.ki[1]*100))+100);
-                seekBarK2.setProgress((int)(Math.round(llop.ki[2]*100))+100);
-                seekBarK3.setProgress((int)(Math.round(llop.ki[3]*100))+100);
-                seekBarK4.setProgress((int)(Math.round(llop.ki[4]*100))+100);
-                seekBarK5.setProgress((int)(Math.round(llop.ki[5]*100))+100);
-                seekBarK6.setProgress((int)(Math.round(llop.ki[6]*100))+100);
-                seekBarK7.setProgress((int)(Math.round(llop.ki[7]*100))+100);
-                seekBarK8.setProgress((int)(Math.round(llop.ki[8]*100))+100);
-                seekBarK9.setProgress((int)(Math.round(llop.ki[9]*100))+100);
-
-                seekBarA0.setProgress((int)(Math.round(llop.ai[0]*100))+100);
-                seekBarA1.setProgress((int)(Math.round(llop.ai[1]*100))+100);
-                seekBarA2.setProgress((int)(Math.round(llop.ai[2]*100))+100);
-                seekBarA3.setProgress((int)(Math.round(llop.ai[3]*100))+100);
-                seekBarA4.setProgress((int)(Math.round(llop.ai[4]*100))+100);
-                seekBarA5.setProgress((int)(Math.round(llop.ai[5]*100))+100);
-                seekBarA6.setProgress((int)(Math.round(llop.ai[6]*100))+100);
-                seekBarA7.setProgress((int)(Math.round(llop.ai[7]*100))+100);
-                seekBarA8.setProgress((int)(Math.round(llop.ai[8]*100))+100);
-                seekBarA9.setProgress((int)(Math.round(llop.ai[9]*100))+100);
-                seekBarA10.setProgress((int)(Math.round(llop.ai[10]*100))+100);
 
                 Snackbar.make(view, "Resetting parameters values", Snackbar.LENGTH_SHORT)
                         .setAction("No action", null).show();
@@ -1330,55 +1287,11 @@ public class FullscreenActivity extends AppCompatActivity {
                 llop.ki[8] = ThreadLocalRandom.current().nextDouble(min, max);
                 llop.ki[9] = ThreadLocalRandom.current().nextDouble(min, max);
 
-                tvK0.setText(String.format("K0=%f", llop.ki[0]));
-                tvK1.setText(String.format("K1=%f", llop.ki[1]));
-                tvK2.setText(String.format("K2=%f", llop.ki[2]));
-                tvK3.setText(String.format("K3=%f", llop.ki[3]));
-                tvK4.setText(String.format("K4=%f", llop.ki[4]));
-                tvK5.setText(String.format("K5=%f", llop.ki[5]));
-                tvK6.setText(String.format("K6=%f", llop.ki[6]));
-                tvK7.setText(String.format("K7=%f", llop.ki[7]));
-                tvK8.setText(String.format("K8=%f", llop.ki[8]));
-                tvK9.setText(String.format("K9=%f", llop.ki[9]));
-
+                refreshKiOnGui();
                 llop.ki2ai();
-
-                tvA0.setText(String.format("A0=%f", llop.ai[0]));
-                tvA1.setText(String.format("A1=%f", llop.ai[1]));
-                tvA2.setText(String.format("A2=%f", llop.ai[2]));
-                tvA3.setText(String.format("A3=%f", llop.ai[3]));
-                tvA4.setText(String.format("A4=%f", llop.ai[4]));
-                tvA5.setText(String.format("A5=%f", llop.ai[5]));
-                tvA6.setText(String.format("A6=%f", llop.ai[6]));
-                tvA7.setText(String.format("A7=%f", llop.ai[7]));
-                tvA8.setText(String.format("A8=%f", llop.ai[8]));
-                tvA9.setText(String.format("A9=%f", llop.ai[9]));
-                tvA10.setText(String.format("A10=%f", llop.ai[10]));
+                refreshAiOnGui();
 
                 drawUnitCircleOnImageView();
-
-                seekBarK0.setProgress((int)(Math.round(llop.ki[0]*100))+100);
-                seekBarK1.setProgress((int)(Math.round(llop.ki[1]*100))+100);
-                seekBarK2.setProgress((int)(Math.round(llop.ki[2]*100))+100);
-                seekBarK3.setProgress((int)(Math.round(llop.ki[3]*100))+100);
-                seekBarK4.setProgress((int)(Math.round(llop.ki[4]*100))+100);
-                seekBarK5.setProgress((int)(Math.round(llop.ki[5]*100))+100);
-                seekBarK6.setProgress((int)(Math.round(llop.ki[6]*100))+100);
-                seekBarK7.setProgress((int)(Math.round(llop.ki[7]*100))+100);
-                seekBarK8.setProgress((int)(Math.round(llop.ki[8]*100))+100);
-                seekBarK9.setProgress((int)(Math.round(llop.ki[9]*100))+100);
-
-                seekBarA0.setProgress((int)(Math.round(llop.ai[0]*100))+100);
-                seekBarA1.setProgress((int)(Math.round(llop.ai[1]*100))+100);
-                seekBarA2.setProgress((int)(Math.round(llop.ai[2]*100))+100);
-                seekBarA3.setProgress((int)(Math.round(llop.ai[3]*100))+100);
-                seekBarA4.setProgress((int)(Math.round(llop.ai[4]*100))+100);
-                seekBarA5.setProgress((int)(Math.round(llop.ai[5]*100))+100);
-                seekBarA6.setProgress((int)(Math.round(llop.ai[6]*100))+100);
-                seekBarA7.setProgress((int)(Math.round(llop.ai[7]*100))+100);
-                seekBarA8.setProgress((int)(Math.round(llop.ai[8]*100))+100);
-                seekBarA9.setProgress((int)(Math.round(llop.ai[9]*100))+100);
-                seekBarA10.setProgress((int)(Math.round(llop.ai[10]*100))+100);
 
                 Snackbar.make(view, "Randomizing parameters values", Snackbar.LENGTH_SHORT)
                         .setAction("No action", null).show();
@@ -1406,6 +1319,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 refreshKiOnGui();
                 llop.ki2ai();
                 refreshAiOnGui();
+
                 Snackbar.make(view, "Parameters recalled", Snackbar.LENGTH_SHORT)
                         .setAction("No action", null).show();
             }
@@ -1448,6 +1362,17 @@ public class FullscreenActivity extends AppCompatActivity {
                 refreshAiOnGui();
 
                 Snackbar.make(view, "Undoing parameters change", Snackbar.LENGTH_SHORT)
+                        .setAction("No action", null).show();
+            }
+        });
+
+        Button buttonResetFilterMem = (Button) findViewById(R.id.buttonResetFilterMem);
+        buttonResetFilterMem.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                llop.RazFilterMemories();
+
+                Snackbar.make(view, "Reset filter mem", Snackbar.LENGTH_SHORT)
                         .setAction("No action", null).show();
             }
         });
@@ -1600,9 +1525,9 @@ public class FullscreenActivity extends AppCompatActivity {
             if (vv > vv_max) vv_max = vv;
             if (vv < vv_min) vv_min = vv;
 
-            double vv_shifted = vv + 7.0;
+            double vv_shifted = vv + 3.0;
 
-            int h = (int) Math.round(ch * vv_shifted / 20);
+            int h = (int) Math.round(ch * vv_shifted / 10);
             int f = (int) ((double)cw * (double)i * 2.0 / (double)llop.frameSize);
             canvas.drawLine(f, ch, f, ch - h, paint);
         }
@@ -1723,9 +1648,10 @@ public class FullscreenActivity extends AppCompatActivity {
         for (int i=0; i<llop.norder; i++){
             if (llop.ki[i] != -1){
                 Splus = (1-llop.ki[i])*Smoins/(1+llop.ki[i]);
-                canvas.drawLine((i+1)*Math.round(xs/10)   , ys - Math.round(10*Smoins), (i+1)*Math.round(xs/10)   , ys - Math.round(10*Splus), paint);
-                canvas.drawLine((i+1)*Math.round(xs/10)   , ys - Math.round(10*Splus),(i+1)*Math.round(xs/10)+Math.round(xs/10), ys - Math.round(10*Splus), paint);
-                Smoins =Splus;
+                int startX = (i + 1) * Math.round(xs / 10);
+                canvas.drawLine(startX, ys - Math.round(10*Smoins), startX, ys - Math.round(10*Splus), paint);
+                canvas.drawLine(startX, ys - Math.round(10*Splus), startX + Math.round(xs/10), ys - Math.round(10*Splus), paint);
+                Smoins = Splus;
             }
         }
         imageViewPlot.setImageDrawable(new BitmapDrawable(getResources(), mutableBitmap));
@@ -1914,13 +1840,48 @@ public class FullscreenActivity extends AppCompatActivity {
 
         LpcHandler lpcHandler = new LpcHandler() {
             @Override
-            public void handlePitch(final double[] lpc_array, AudioEvent e) {
+            public void handlePitch(
+                    final double SigmaAutocorr,
+                    final double[] parcor,
+                    final float[] audioFloatBuffer,
+                    final Complex1D y_out,
+                    AudioEvent e) {
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         //TextView text = (TextView) findViewById(R.id.tvPitch);
                         //text.setText(String.format("min=%f max=%f", lpc_array[0], lpc_array[1]));
+                        for (int i=0; i < llop.norder; i++) llop.ki[i] = parcor[i];
+                        for (int i=0; i < llop.frameSize; i++) llop.y[i] = (double) audioFloatBuffer[i];
+                        llop.y_out = y_out;
+
+                        refreshKiOnGui();
+                        llop.ki2ai();
+                        refreshAiOnGui();
+
+                        switch(plotType){
+                            case FFT:
+                                drawFFTOnImageView();
+                                break;
+
+                            case SPECTROGRAM:
+                                drawSpectrogramOnImageView();
+                                break;
+
+                            case TIMEWAVE:
+                                drawTimeWaveOnImageView();
+                                break;
+
+                            case TUBEMODEL:
+                                drawTubeModelOnImageView();
+                                break;
+
+                            case UNITCIRCLE:
+                                //llop.roots1();
+                                //drawUnitCircleOnImageView();
+                                break;
+                        }
                     }
                 });
             }

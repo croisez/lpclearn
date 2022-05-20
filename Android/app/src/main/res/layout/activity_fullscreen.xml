@@ -744,6 +744,14 @@
                     android:layout_height="wrap_content"
                     android:text="Ai values" />
 
+                <Button
+                    android:id="@+id/buttonResetFilterMem"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:text="Reset filter memory"
+                    android:textSize="8sp" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

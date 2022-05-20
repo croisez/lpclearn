@@ -30,10 +30,10 @@ public class LpcLearnOutputProcessor {
 	public double[] ki = new double[norder];
 	public double[] ki_undo = new double[norder];
 	public double[] ki_swap = new double[norder];
-	public double[] ai = new double[norder+1];
-	private double[] zi = new double[norder];
+	public double[] ai = new double[norder + 1];
+	private double[] zi = new double[norder + 1];
 	private double[] kimem = new double[norder];
-	private double[] x = new double[m_sampleRate];
+	public double[] x = new double[m_sampleRate];
 	public double[] y = new double[m_sampleRate];
 	public double[] y_in = new double[frameSize];
 	public Complex1D y_out = new Complex1D();
@@ -211,6 +211,11 @@ public class LpcLearnOutputProcessor {
 			}
 			zi[0] = x1;
 		}
+	}
+
+	public void RazFilterMemories() {
+		int i;
+		for (i = 0; i <= norder; i++) zi[i] = 0.0; //Raz filter memories
 	}
 
 	Complex div_C(Complex c1, Complex c2) {
