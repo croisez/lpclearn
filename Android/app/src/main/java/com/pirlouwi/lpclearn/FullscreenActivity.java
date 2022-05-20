@@ -40,6 +40,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
+import be.tarsos.dsp.pitch.PitchDetectionResult;
 import ca.uol.aig.fftpack.Complex1D;
 
 
@@ -172,6 +173,11 @@ public class FullscreenActivity extends AppCompatActivity {
     private SeekBar seekBarA9;
     private SeekBar seekBarA10;
 
+    private Button buttonFreqdec;
+    private Button buttonFreqinc;
+    private SeekBar seekBarFreq;
+    private TextView tvFreq;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -192,7 +198,7 @@ public class FullscreenActivity extends AppCompatActivity {
         });
 
 
-        final TextView tvFreq = (TextView) findViewById(R.id.tvFreq);
+        tvFreq = (TextView) findViewById(R.id.tvFreq);
         tvSigma = (TextView) findViewById(R.id.tvSigma);
 
         tvK0 = (TextView) findViewById(R.id.tvK0);
@@ -258,10 +264,10 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
-        tvFreq.setText(String.format("%f", llop.pitchVal));
+        tvFreq.setText(String.format("%f Hz", llop.pitchVal));
         tvSigma.setText(String.format("%f",llop.SIGMA));
 
-        final SeekBar seekBarFreq = findViewById(R.id.seekBarFreq);
+        seekBarFreq = findViewById(R.id.seekBarFreq);
         seekBarFreq.setProgress((int)llop.pitchVal);
         seekBarFreq.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -276,7 +282,7 @@ public class FullscreenActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-        final Button buttonFreqdec = (Button) findViewById(R.id.buttonFreqdec);
+        buttonFreqdec = (Button) findViewById(R.id.buttonFreqdec);
         buttonFreqdec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -285,7 +291,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 seekBarFreq.setProgress((int)llop.pitchVal);
             }
         });
-        final Button buttonFreqinc = (Button) findViewById(R.id.buttonFreqinc);
+        buttonFreqinc = (Button) findViewById(R.id.buttonFreqinc);
         buttonFreqinc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -299,22 +305,14 @@ public class FullscreenActivity extends AppCompatActivity {
         radioButtonVoiced.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                llop.bVoiced = true;
-                drawSwitchOnImageView(llop.bVoiced);
-                buttonFreqdec.setEnabled(true);
-                buttonFreqinc.setEnabled(true);
-                seekBarFreq.setEnabled(true);
+                SelectVoicedMode();
             }
         });
         RadioButton radioButtonUnvoiced = (RadioButton) findViewById(R.id.radioButtonUnvoiced);
         radioButtonUnvoiced.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                llop.bVoiced = false;
-                drawSwitchOnImageView(llop.bVoiced);
-                buttonFreqdec.setEnabled(false);
-                buttonFreqinc.setEnabled(false);
-                seekBarFreq.setEnabled(false);
+                SelectUnvoicedMode();
             }
         });
 
@@ -1384,6 +1382,22 @@ public class FullscreenActivity extends AppCompatActivity {
         requestRecordAudioPermission();
     }
 
+    public void SelectVoicedMode(){
+        llop.bVoiced = true;
+        drawSwitchOnImageView(llop.bVoiced);
+        buttonFreqdec.setEnabled(true);
+        buttonFreqinc.setEnabled(true);
+        seekBarFreq.setEnabled(true);
+    }
+
+    public void SelectUnvoicedMode(){
+        llop.bVoiced = false;
+        drawSwitchOnImageView(llop.bVoiced);
+        buttonFreqdec.setEnabled(false);
+        buttonFreqinc.setEnabled(false);
+        seekBarFreq.setEnabled(false);
+    }
+
     private void refreshKiOnGui(){
         tvK0.setText(String.format("K0=%f", llop.ki[0]));
         tvK1.setText(String.format("K1=%f", llop.ki[1]));
@@ -1845,7 +1859,8 @@ public class FullscreenActivity extends AppCompatActivity {
                     final double[] parcor,
                     final float[] audioFloatBuffer,
                     final Complex1D y_out,
-                    AudioEvent e) {
+                    final PitchDetectionResult pitchResult,
+                    final AudioEvent e) {
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -1859,6 +1874,19 @@ public class FullscreenActivity extends AppCompatActivity {
                         refreshKiOnGui();
                         llop.ki2ai();
                         refreshAiOnGui();
+
+                        //DisplayPitchEstimation(pitchResult, e);
+                        if (pitchResult.isPitched()) {
+                            //Voiced case
+                            llop.pitchVal = pitchResult.getPitch();
+                            seekBarFreq.setProgress((int)llop.pitchVal);
+                            tvFreq.setText(String.format("%f Hz", llop.pitchVal));
+                            SelectVoicedMode();
+                        } else {
+                            //Unvoiced case
+                            llop.bVoiced = false;
+                            SelectUnvoicedMode();
+                        }
 
                         switch(plotType){
                             case FFT:
@@ -1892,6 +1920,20 @@ public class FullscreenActivity extends AppCompatActivity {
         new Thread(dispatcher,"Audio Input Dispatcher").start();
     }
 
+    public void DisplayPitchEstimation(PitchDetectionResult pitchResult, AudioEvent e){
+        String pitchMsg;
+
+        if (pitchResult.isPitched()) {
+            float pitch = pitchResult.getPitch();
+            float probability = pitchResult.getProbability();
+            double rms = e.getRMS() * 100;
+            pitchMsg = String.format("Pitch %.2fHz (%.2f probability, RMS: %.5f)", pitch, probability, rms);
+        } else {
+            pitchMsg = "No pitch detected";
+        }
+
+        tvFreq.setText(pitchMsg);
+    }
 
     public void LPCLearn_output_start(){
         //llop.play(); //Useful to auto-start playing on application start
