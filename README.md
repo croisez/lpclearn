@@ -32,4 +32,4 @@ We are mainly using two libraries :
 * https://github.com/projapps/AudioVisualizer/tree/master/app/src/main/java/ca/uol/aig/fftpack
 * http://www.netlib.org/fftpack/
 * https://staff.umons.ac.be/thierry.dutoit/
-* mailto:// louis (at) croisez.be 
+* https://www.linkedin.com/in/louiscroisez/ louis(at)croisez.be 
