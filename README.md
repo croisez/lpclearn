@@ -47,7 +47,8 @@ You can switch between those two modes by touching the one you want in the Audio
 A graphical area is reserved for the display of real-time data such as:
 * FFT (abs value vs frequency)
 * Spectrogram (FFT vs time)
-* tube model 
+* Timewave (excitation vs time)
+* tube model (equivalent resonating tubes model)
 * unit circle (location of zeroes of transfer function)
 
 You can cycle from a display view to another by touching the graphical area.
@@ -65,8 +66,23 @@ You are welcome to change configuration in following sections:
 
 ### RECORDING mode
 
-In recording mode, the way is done backward: the application records audio in real-time, and computes Ki (Parcor) coefficients, pitch in Hz, and detect is signal is voiced or unvoiced.
+In recording mode, the way is done backward: the application records audio in real-time, and computes Ki (Parcor) coefficients, then pitch in Hz, and detect if signal is voiced or unvoiced.
 
-For example, you can use RECORDING mode as a starting point, and stop recording while audio is captured. At the moment you push on the record button to stop capturing, Parcor coefficients are used to initialize the PLAYING mode data.
+A typical use case is as follows: use RECORDING mode as a starting point, and stop recording while audio is captured. 
+At the moment you push on the record button to stop capturing, Parcor coefficients are stored as current values for the PLAYING mode.
+
+### Ki menu buttons
+
+* RESET   All Ki and Ai are reset to their default value
+* RANDOM  Ki (and Ai(Ki)) get random values
+* MR      Memory Recall (Ki values are loaded from configuration file)
+* MS      Memory Store  (Ki values are stored to configuration file)
+* UNDO    Reset former parameters before it was modified
+
+### Ai menu button
+
+* RESET FILTER MEMORY   internal IIR filter accumulators are reset to zeroes
+
+### Application screenshot
 
 <img src=https://github.com/croisez/lpclearn/blob/main/Android/screenshot.jpg width="300">

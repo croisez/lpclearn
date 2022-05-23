@@ -42,6 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+<!-- Software title & copyright -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -88,7 +89,7 @@
 
 
 
-
+<!-- LPC model schema -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -101,6 +102,7 @@
 
 
 
+<!-- Voiced/unvoiced -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -134,6 +136,7 @@
 
 
 
+<!-- Amplitude -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -201,6 +204,7 @@
 
 
 
+<!-- Excitation pitch -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -249,29 +253,11 @@
                 </LinearLayout>
 
 
-
-
+<!-- Audio control -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text=" " />
-                <TextView
-                    android:id="@+id/tvPlotsTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="11sp"
-                    android:text="FFT -> Spectrogram -> timewave -> tube model -> unit circle" />
-
-                <ImageView
-                    android:id="@+id/imageViewFFT"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    app:srcCompat="@drawable/fft" />
-
-
-
-
                 <TextView
                     android:id="@+id/tvAudiobufControl"
                     android:layout_width="match_parent"
@@ -302,8 +288,28 @@
 
 
 
+<!-- Graphical area -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=" " />
+                <TextView
+                    android:id="@+id/tvPlotsTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="11sp"
+                    android:text="FFT -> Spectrogram -> timewave -> tube model -> unit circle" />
+
+                <ImageView
+                    android:id="@+id/imageViewFFT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    app:srcCompat="@drawable/fft" />
 
 
+
+<!-- Ki -->
                 <TextView
                     android:id="@+id/tvKiTitle"
                     android:layout_width="match_parent"
@@ -734,6 +740,9 @@
                         android:text="&gt;" />
                 </LinearLayout>
 
+
+
+<!-- Ai -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
