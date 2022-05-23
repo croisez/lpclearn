@@ -67,4 +67,4 @@ In recording mode, the way is done backward: the application records audio in re
 For example, you can use RECORDING mode as a starting point, and stop recording while audio is captured. At the moment you push on the record button to stop capturing, Parcor coefficients are used to initialize the PLAYING mode data.
 
 
-![screenshot](https://github.com/croisez/lpclearn/blob/main/Android/screenshot.jpg =x500)
+![screenshot](https://github.com/croisez/lpclearn/blob/main/Android/screenshot.jpg =540x2983)
