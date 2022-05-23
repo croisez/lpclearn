@@ -67,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="right"
-                    android:text="Written by LM Croisez. Released under LGPL License  "
+                    android:text="Coded by LM Croisez. Released under LGPL License  "
                     android:textSize="8sp" />
 
                 <TextView
@@ -93,46 +93,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text=" " />
-                <TextView
-                    android:id="@+id/tvAudiobufControl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Audio control" />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <ImageButton
-                        android:id="@+id/imageButtonPlay"
-                        android:layout_width="135dp"
-                        android:layout_height="135dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginRight="25dp"
-                        android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/iconplay" />
-                    <ImageButton
-                        android:id="@+id/imageButtonRecord"
-                        android:layout_width="135dp"
-                        android:layout_height="135dp"
-                        android:layout_marginLeft="25dp"
-                        android:layout_marginRight="50dp"
-                        android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/iconrec" />
-                </LinearLayout>
-
-
-
-
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=" " />
                 <ImageView
                     android:id="@+id/imageViewLpcModel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/lpc" />
+                    app:srcCompat="@drawable/lpc_v" />
 
 
 
@@ -224,21 +189,6 @@
                     android:layout_height="wrap_content"
                     android:text=" " />
                 <TextView
-                    android:id="@+id/tvPlotsTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="FFT -> Spectrogram -> timewave -> tube model -> unit circle" />
-
-                <ImageView
-                    android:id="@+id/imageViewFFT"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    app:srcCompat="@drawable/fft" />
-
-
-
-                <TextView
                     android:id="@+id/tvSigmaTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -300,10 +250,60 @@
 
 
 
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text=" " />
+                <TextView
+                    android:id="@+id/tvPlotsTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="11sp"
+                    android:text="FFT -> Spectrogram -> timewave -> tube model -> unit circle" />
+
+                <ImageView
+                    android:id="@+id/imageViewFFT"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    app:srcCompat="@drawable/fft" />
+
+
+
+
+                <TextView
+                    android:id="@+id/tvAudiobufControl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Audio control" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <ImageButton
+                        android:id="@+id/imageButtonPlay"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="25dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/iconplay" />
+                    <ImageButton
+                        android:id="@+id/imageButtonRecord"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="25dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/iconrec" />
+                </LinearLayout>
+
+
+
+
+
                 <TextView
                     android:id="@+id/tvKiTitle"
                     android:layout_width="match_parent"

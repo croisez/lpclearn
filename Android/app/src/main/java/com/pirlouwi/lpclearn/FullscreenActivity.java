@@ -177,6 +177,8 @@ public class FullscreenActivity extends AppCompatActivity {
     private Button buttonFreqinc;
     private SeekBar seekBarFreq;
     private TextView tvFreq;
+    private RadioButton radioButtonVoiced;
+    private RadioButton radioButtonUnvoiced;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -301,14 +303,14 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
-        RadioButton radioButtonVoiced = (RadioButton) findViewById(R.id.radioButtonVoiced);
+        radioButtonVoiced = (RadioButton) findViewById(R.id.radioButtonVoiced);
         radioButtonVoiced.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 SelectVoicedMode();
             }
         });
-        RadioButton radioButtonUnvoiced = (RadioButton) findViewById(R.id.radioButtonUnvoiced);
+        radioButtonUnvoiced = (RadioButton) findViewById(R.id.radioButtonUnvoiced);
         radioButtonUnvoiced.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -320,7 +322,7 @@ public class FullscreenActivity extends AppCompatActivity {
         buttonFreqdec.setEnabled(llop.bVoiced);
         buttonFreqinc.setEnabled(llop.bVoiced);
         seekBarFreq.setEnabled(llop.bVoiced);
-        drawSwitchOnImageView(llop.bVoiced);
+        updateSchemaOnImageView(llop.bVoiced);
 
         seekBarSigma = (SeekBar) findViewById(R.id.seekBarSigma);
         seekBarSigma.setProgress((int)(Math.round(llop.SIGMA*100)));
@@ -1384,18 +1386,20 @@ public class FullscreenActivity extends AppCompatActivity {
 
     public void SelectVoicedMode(){
         llop.bVoiced = true;
-        drawSwitchOnImageView(llop.bVoiced);
+        updateSchemaOnImageView(true);
         buttonFreqdec.setEnabled(true);
         buttonFreqinc.setEnabled(true);
         seekBarFreq.setEnabled(true);
+        radioButtonVoiced.setChecked(true);
     }
 
     public void SelectUnvoicedMode(){
         llop.bVoiced = false;
-        drawSwitchOnImageView(llop.bVoiced);
+        updateSchemaOnImageView(false);
         buttonFreqdec.setEnabled(false);
         buttonFreqinc.setEnabled(false);
         seekBarFreq.setEnabled(false);
+        radioButtonUnvoiced.setChecked(true);
     }
 
     private void refreshKiOnGui(){
@@ -1448,8 +1452,19 @@ public class FullscreenActivity extends AppCompatActivity {
         seekBarA10.setProgress((int)(Math.round(llop.ai[10]*100))+100);
     }
 
+    private void updateSchemaOnImageView(boolean voiced){
+        ImageView imageViewLpcModel = findViewById(R.id.imageViewLpcModel);
+
+        if (voiced) {
+            imageViewLpcModel.setImageResource(R.drawable.lpc_v);
+        } else {
+            imageViewLpcModel.setImageResource(R.drawable.lpc_uv);
+        }
+    }
+/*
     private void drawSwitchOnImageView(boolean voiced){
         ImageView imageViewLpcModel = findViewById(R.id.imageViewLpcModel);
+        imageViewLpcModel.setImageResource(R.drawable.lpc_v);
         Paint paint = new Paint();
         paint.setDither(true);
         paint.setColor(0xFF000000);  // alpha.r.g.b
@@ -1468,7 +1483,7 @@ public class FullscreenActivity extends AppCompatActivity {
         canvas.drawBitmap(mutableBitmap, immutableBitmap.getWidth(), immutableBitmap.getHeight(), paint);
         imageViewLpcModel.setImageDrawable(new BitmapDrawable(getResources(), mutableBitmap));
     }
-
+*/
     public enum PlotType {
         FFT,
         SPECTROGRAM,
