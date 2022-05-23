@@ -35,13 +35,16 @@ We are mainly using two libraries :
 
 ## How to use the Android application
 
+The application is visualy based on a big vertical ScrollView. Just scroll the application screen up and down to make controls appear.
+
 ### choosing a working mode 
 
-There are two modes in this application: Playing & Recording. You switch between those 2 modes by touching the one you want in the Audio control section.
+There are mainly two working modes in this application: Playing & Recording. 
+You can switch between those two modes by touching the one you want in the Audio control section.
 
 ### graphical display
 
-A graphical area is devoted for the display of real-time data such as:
+A graphical area is reserved for the display of real-time data such as:
 * FFT (abs value vs frequency)
 * Spectrogram (FFT vs time)
 * tube model 
