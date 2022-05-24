@@ -1305,6 +1305,8 @@ public class FullscreenActivity extends AppCompatActivity {
                 llop.saveKi2Undo();
 
                 SharedPreferences settings = getSharedPreferences("lpclearn", MODE_PRIVATE);
+                llop.bVoiced = settings.getBoolean("voiced", true);
+                llop.pitchVal = (double) settings.getFloat("pitch", 100.0f);
                 llop.ki[0] = settings.getFloat("ki0", 0.0f);
                 llop.ki[1] = settings.getFloat("ki1", 0.0f);
                 llop.ki[2] = settings.getFloat("ki2", 0.0f);
@@ -1315,6 +1317,10 @@ public class FullscreenActivity extends AppCompatActivity {
                 llop.ki[7] = settings.getFloat("ki7", 0.0f);
                 llop.ki[8] = settings.getFloat("ki8", 0.0f);
                 llop.ki[9] = settings.getFloat("ki9", 0.0f);
+
+                SelectVoicedMode();
+                tvFreq.setText(String.format("%f",llop.pitchVal));
+                seekBarFreq.setProgress((int)llop.pitchVal);
 
                 refreshKiOnGui();
                 llop.ki2ai();
@@ -1331,7 +1337,8 @@ public class FullscreenActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SharedPreferences settings = getSharedPreferences("lpclearn", MODE_PRIVATE);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putString("url", "");
+                editor.putBoolean("voiced", llop.bVoiced);
+                editor.putFloat("pitch", (float)llop.pitchVal);
                 editor.putFloat("ki0", (float)llop.ki[0]);
                 editor.putFloat("ki1", (float)llop.ki[1]);
                 editor.putFloat("ki2", (float)llop.ki[2]);
@@ -1756,8 +1763,8 @@ public class FullscreenActivity extends AppCompatActivity {
                             break;
 
                         case UNITCIRCLE:
-                            //llop.roots1();
-                            //drawUnitCircleOnImageView();
+                            llop.roots1();
+                            drawUnitCircleOnImageView();
                             break;
                     }
                 }
