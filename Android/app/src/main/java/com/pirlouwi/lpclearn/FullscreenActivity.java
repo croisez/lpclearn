@@ -11,13 +11,10 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-//import android.support.v7.app.ActionBar;
-//import android.support.v7.app.AppCompatActivity;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -150,6 +147,56 @@ public class FullscreenActivity extends AppCompatActivity {
     private TextView tvA9;
     private TextView tvA10;
 
+    private Button buttonKiMR;
+    private Button buttonKiMS;
+    private Button buttonKiReset;
+    private Button buttonKiRandom;
+    private Button buttonKiUndo;
+    private Button buttonResetFilterMem;
+
+    private Button buttonK0dec;
+    private Button buttonK1dec;
+    private Button buttonK2dec;
+    private Button buttonK3dec;
+    private Button buttonK4dec;
+    private Button buttonK5dec;
+    private Button buttonK6dec;
+    private Button buttonK7dec;
+    private Button buttonK8dec;
+    private Button buttonK9dec;
+    private Button buttonK0inc;
+    private Button buttonK1inc;
+    private Button buttonK2inc;
+    private Button buttonK3inc;
+    private Button buttonK4inc;
+    private Button buttonK5inc;
+    private Button buttonK6inc;
+    private Button buttonK7inc;
+    private Button buttonK8inc;
+    private Button buttonK9inc;
+    private Button buttonA0dec;
+    private Button buttonA1dec;
+    private Button buttonA2dec;
+    private Button buttonA3dec;
+    private Button buttonA4dec;
+    private Button buttonA5dec;
+    private Button buttonA6dec;
+    private Button buttonA7dec;
+    private Button buttonA8dec;
+    private Button buttonA9dec;
+    private Button buttonA10dec;
+    private Button buttonA0inc;
+    private Button buttonA1inc;
+    private Button buttonA2inc;
+    private Button buttonA3inc;
+    private Button buttonA4inc;
+    private Button buttonA5inc;
+    private Button buttonA6inc;
+    private Button buttonA7inc;
+    private Button buttonA8inc;
+    private Button buttonA9inc;
+    private Button buttonA10inc;
+
     private SeekBar seekBarK0;
     private SeekBar seekBarK1;
     private SeekBar seekBarK2;
@@ -241,11 +288,13 @@ public class FullscreenActivity extends AppCompatActivity {
                     imageButtonRecord.setEnabled(false);
                     imageButtonRecord.setImageResource(R.drawable.iconrecdis);
                     imageButtonPlay.setImageResource(R.drawable.iconstopplay);
+                    handleAiKiControls(true);
                 } else {
                     llop.stop();
                     imageButtonRecord.setEnabled(true);
                     imageButtonRecord.setImageResource(R.drawable.iconrec);
                     imageButtonPlay.setImageResource(R.drawable.iconplay);
+                    handleAiKiControls(false);
                 }
             }
         });
@@ -257,15 +306,17 @@ public class FullscreenActivity extends AppCompatActivity {
                     imageButtonPlay.setEnabled(false);
                     imageButtonPlay.setImageResource(R.drawable.iconplaydis);
                     imageButtonRecord.setImageResource(R.drawable.iconstoprec);
+                    handleAiKiControls(false);
                 } else {
                     llip.m_stop = true;
                     imageButtonPlay.setEnabled(true);
                     imageButtonPlay.setImageResource(R.drawable.iconplay);
                     imageButtonRecord.setImageResource(R.drawable.iconrec);
+                    handleAiKiControls(false);
                 }
             }
         });
-
+        
         tvFreq.setText(String.format("%f Hz", llop.pitchVal));
         tvSigma.setText(String.format("%f",llop.SIGMA));
 
@@ -379,7 +430,7 @@ public class FullscreenActivity extends AppCompatActivity {
                      tvK0.setText(String.format("K0=%f", llop.ki[0]));
                      llop.ki2ai();
                      refreshAiOnGui();
-                     drawUnitCircleOnImageView();
+                     drawUnitCircleOnImageView(true);
                  }
              }
             @Override
@@ -387,20 +438,22 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK0dec = (Button) findViewById(R.id.buttonK0dec);
+        buttonK0dec = (Button) findViewById(R.id.buttonK0dec);
         buttonK0dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[0] >= -0.99) llop.ki[0] -= .01;
                 tvK0.setText(String.format("K0=%f",llop.ki[0]));
                 seekBarK0.setProgress((int)(Math.round(llop.ki[0]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai();
+                refreshAiOnGui();
+                drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK0inc = (Button) findViewById(R.id.buttonK0inc);
+        buttonK0inc = (Button) findViewById(R.id.buttonK0inc);
         buttonK0inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -409,7 +462,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 seekBarK0.setProgress((int)(Math.round(llop.ki[0]*100))+100);
                 llop.ki2ai();
                 refreshAiOnGui();
-                drawUnitCircleOnImageView();
+                drawUnitCircleOnImageView(true);
             }
         });
 
@@ -423,7 +476,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     tvK1.setText(String.format("K1=%f", llop.ki[1]));
                     llop.ki2ai();
                     refreshAiOnGui();
-                    drawUnitCircleOnImageView();
+                    drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -431,27 +484,31 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK1dec = (Button) findViewById(R.id.buttonK1dec);
+        buttonK1dec = (Button) findViewById(R.id.buttonK1dec);
         buttonK1dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[1] >= -0.99) llop.ki[1] -= .01;
                 tvK1.setText(String.format("K1=%f",llop.ki[1]));
                 seekBarK1.setProgress((int)(Math.round(llop.ki[1]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai();
+                refreshAiOnGui();
+                drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK1inc = (Button) findViewById(R.id.buttonK1inc);
+        buttonK1inc = (Button) findViewById(R.id.buttonK1inc);
         buttonK1inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[1] <= 0.99) llop.ki[1] += .01;
                 tvK1.setText(String.format("K1=%f",llop.ki[1]));
                 seekBarK1.setProgress((int)(Math.round(llop.ki[1]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai();
+                refreshAiOnGui();
+                drawUnitCircleOnImageView(true);
             }
         });
 
@@ -465,7 +522,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     tvK2.setText(String.format("K2=%f", llop.ki[2]));
                     llop.ki2ai();
                     refreshAiOnGui();
-                    drawUnitCircleOnImageView();
+                    drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -473,27 +530,31 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK2dec = (Button) findViewById(R.id.buttonK2dec);
+        buttonK2dec = (Button) findViewById(R.id.buttonK2dec);
         buttonK2dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[2] >= -0.99) llop.ki[2] -= .01;
                 tvK2.setText(String.format("K2=%f",llop.ki[2]));
                 seekBarK2.setProgress((int)(Math.round(llop.ki[2]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai();
+                refreshAiOnGui();
+                drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK2inc = (Button) findViewById(R.id.buttonK2inc);
+        buttonK2inc = (Button) findViewById(R.id.buttonK2inc);
         buttonK2inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[2] <= 0.99) llop.ki[2] += .01;
                 tvK2.setText(String.format("K2=%f",llop.ki[2]));
                 seekBarK2.setProgress((int)(Math.round(llop.ki[2]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai();
+                refreshAiOnGui();
+                drawUnitCircleOnImageView(true);
             }
         });
 
@@ -507,7 +568,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     tvK3.setText(String.format("K3=%f", llop.ki[3]));
                     llop.ki2ai();
                     refreshAiOnGui();
-                    drawUnitCircleOnImageView();
+                    drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -515,27 +576,31 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK3dec = (Button) findViewById(R.id.buttonK3dec);
+        buttonK3dec = (Button) findViewById(R.id.buttonK3dec);
         buttonK3dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[3] >= -0.99) llop.ki[3] -= .01;
                 tvK3.setText(String.format("K3=%f",llop.ki[3]));
                 seekBarK3.setProgress((int)(Math.round(llop.ki[3]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai();
+                refreshAiOnGui();
+                drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK3inc = (Button) findViewById(R.id.buttonK3inc);
+        buttonK3inc = (Button) findViewById(R.id.buttonK3inc);
         buttonK3inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[3] <= 0.99) llop.ki[3] += .01;
                 tvK3.setText(String.format("K3=%f",llop.ki[3]));
                 seekBarK3.setProgress((int)(Math.round(llop.ki[3]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai();
+                refreshAiOnGui();
+                drawUnitCircleOnImageView(true);
             }
         });
 
@@ -549,7 +614,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     tvK4.setText(String.format("K4=%f", llop.ki[4]));
                     llop.ki2ai();
                     refreshAiOnGui();
-                    drawUnitCircleOnImageView();
+                    drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -557,27 +622,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK4dec = (Button) findViewById(R.id.buttonK4dec);
+        buttonK4dec = (Button) findViewById(R.id.buttonK4dec);
         buttonK4dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[4] >= -0.99) llop.ki[4] -= .01;
                 tvK4.setText(String.format("K4=%f",llop.ki[4]));
                 seekBarK4.setProgress((int)(Math.round(llop.ki[4]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK4inc = (Button) findViewById(R.id.buttonK4inc);
+        buttonK4inc = (Button) findViewById(R.id.buttonK4inc);
         buttonK4inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[4] <= 0.99) llop.ki[4] += .01;
                 tvK4.setText(String.format("K4=%f",llop.ki[4]));
                 seekBarK4.setProgress((int)(Math.round(llop.ki[4]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -591,7 +656,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     tvK5.setText(String.format("K5=%f", llop.ki[5]));
                     llop.ki2ai();
                     refreshAiOnGui();
-                    drawUnitCircleOnImageView();
+                    drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -599,27 +664,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK5dec = (Button) findViewById(R.id.buttonK5dec);
+        buttonK5dec = (Button) findViewById(R.id.buttonK5dec);
         buttonK5dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[5] >= -0.99) llop.ki[5] -= .01;
                 tvK5.setText(String.format("K5=%f",llop.ki[5]));
                 seekBarK5.setProgress((int)(Math.round(llop.ki[5]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK5inc = (Button) findViewById(R.id.buttonK5inc);
+        buttonK5inc = (Button) findViewById(R.id.buttonK5inc);
         buttonK5inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[5] <= 0.99) llop.ki[5] += .01;
                 tvK5.setText(String.format("K5=%f",llop.ki[5]));
                 seekBarK5.setProgress((int)(Math.round(llop.ki[5]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -633,7 +698,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     tvK6.setText(String.format("K6=%f", llop.ki[6]));
                     llop.ki2ai();
                     refreshAiOnGui();
-                    drawUnitCircleOnImageView();
+                    drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -641,27 +706,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK6dec = (Button) findViewById(R.id.buttonK6dec);
+        buttonK6dec = (Button) findViewById(R.id.buttonK6dec);
         buttonK6dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[6] >= -0.99) llop.ki[6] -= .01;
                 tvK6.setText(String.format("K6=%f",llop.ki[6]));
                 seekBarK6.setProgress((int)(Math.round(llop.ki[6]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK6inc = (Button) findViewById(R.id.buttonK6inc);
+        buttonK6inc = (Button) findViewById(R.id.buttonK6inc);
         buttonK6inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[6] <= 0.99) llop.ki[6] += .01;
                 tvK6.setText(String.format("K6=%f",llop.ki[6]));
                 seekBarK6.setProgress((int)(Math.round(llop.ki[6]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -675,7 +740,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     tvK7.setText(String.format("K7=%f", llop.ki[7]));
                     llop.ki2ai();
                     refreshAiOnGui();
-                    drawUnitCircleOnImageView();
+                    drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -683,27 +748,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK7dec = (Button) findViewById(R.id.buttonK7dec);
+        buttonK7dec = (Button) findViewById(R.id.buttonK7dec);
         buttonK7dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[7] >= -0.99) llop.ki[7] -= .01;
                 tvK7.setText(String.format("K7=%f",llop.ki[7]));
                 seekBarK7.setProgress((int)(Math.round(llop.ki[7]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK7inc = (Button) findViewById(R.id.buttonK7inc);
+        buttonK7inc = (Button) findViewById(R.id.buttonK7inc);
         buttonK7inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[7] <= 0.99) llop.ki[7] += .01;
                 tvK7.setText(String.format("K7=%f",llop.ki[7]));
                 seekBarK7.setProgress((int)(Math.round(llop.ki[7]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -717,7 +782,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     tvK8.setText(String.format("K8=%f", llop.ki[8]));
                     llop.ki2ai();
                     refreshAiOnGui();
-                    drawUnitCircleOnImageView();
+                    drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -725,27 +790,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK8dec = (Button) findViewById(R.id.buttonK8dec);
+        buttonK8dec = (Button) findViewById(R.id.buttonK8dec);
         buttonK8dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[8] >= -0.99) llop.ki[8] -= .01;
                 tvK8.setText(String.format("K8=%f",llop.ki[8]));
                 seekBarK8.setProgress((int)(Math.round(llop.ki[8]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK8inc = (Button) findViewById(R.id.buttonK8inc);
+        buttonK8inc = (Button) findViewById(R.id.buttonK8inc);
         buttonK8inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[8] <= 0.99) llop.ki[8] += .01;
                 tvK8.setText(String.format("K8=%f",llop.ki[8]));
                 seekBarK8.setProgress((int)(Math.round(llop.ki[8]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -759,7 +824,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     tvK9.setText(String.format("K9=%f", llop.ki[9]));
                     llop.ki2ai();
                     refreshAiOnGui();
-                    drawUnitCircleOnImageView();
+                    drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -767,27 +832,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                //llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK9dec = (Button) findViewById(R.id.buttonK9dec);
+        buttonK9dec = (Button) findViewById(R.id.buttonK9dec);
         buttonK9dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[9] >= -0.99) llop.ki[9] -= .01;
                 tvK9.setText(String.format("K9=%f",llop.ki[9]));
                 seekBarK9.setProgress((int)(Math.round(llop.ki[9]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonK9inc = (Button) findViewById(R.id.buttonK9inc);
+        buttonK9inc = (Button) findViewById(R.id.buttonK9inc);
         buttonK9inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ki[9] <= 0.99) llop.ki[9] += .01;
                 tvK9.setText(String.format("K9=%f",llop.ki[9]));
                 seekBarK9.setProgress((int)(Math.round(llop.ki[9]*100))+100);
-                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView();
+                llop.ki2ai(); refreshAiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -800,7 +865,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[0] = (double) (progressValue - 100) / 100;
                     tvA0.setText(String.format("A0=%f", llop.ai[0]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -808,27 +873,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA0dec = (Button) findViewById(R.id.buttonA0dec);
+        buttonA0dec = (Button) findViewById(R.id.buttonA0dec);
         buttonA0dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[0] >= -0.99) llop.ai[0] -= .01;
                 tvA0.setText(String.format("A0=%f",llop.ai[0]));
                 seekBarA0.setProgress((int)(Math.round(llop.ai[0]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA0inc = (Button) findViewById(R.id.buttonA0inc);
+        buttonA0inc = (Button) findViewById(R.id.buttonA0inc);
         buttonA0inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[0] <= 0.99) llop.ai[0] += .01;
                 tvA0.setText(String.format("A0=%f",llop.ai[0]));
                 seekBarA0.setProgress((int)(Math.round(llop.ai[0]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -840,7 +905,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[1] = (double) (progressValue - 100) / 100;
                     tvA1.setText(String.format("A1=%f", llop.ai[1]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -848,27 +913,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA1dec = (Button) findViewById(R.id.buttonA1dec);
+        buttonA1dec = (Button) findViewById(R.id.buttonA1dec);
         buttonA1dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[1] >= -0.99) llop.ai[1] -= .01;
                 tvA1.setText(String.format("A1=%f",llop.ai[1]));
                 seekBarA1.setProgress((int)(Math.round(llop.ai[1]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA1inc = (Button) findViewById(R.id.buttonA1inc);
+        buttonA1inc = (Button) findViewById(R.id.buttonA1inc);
         buttonA1inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[1] <= 0.99) llop.ai[1] += .01;
                 tvA1.setText(String.format("A1=%f",llop.ai[1]));
                 seekBarA1.setProgress((int)(Math.round(llop.ai[1]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -880,7 +945,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[2] = (double) (progressValue - 100) / 100;
                     tvA2.setText(String.format("A2=%f", llop.ai[2]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -888,27 +953,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA2dec = (Button) findViewById(R.id.buttonA2dec);
+        buttonA2dec = (Button) findViewById(R.id.buttonA2dec);
         buttonA2dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[2] >= -0.99) llop.ai[2] -= .01;
                 tvA2.setText(String.format("A2=%f",llop.ai[2]));
                 seekBarA2.setProgress((int)(Math.round(llop.ai[2]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA2inc = (Button) findViewById(R.id.buttonA2inc);
+        buttonA2inc = (Button) findViewById(R.id.buttonA2inc);
         buttonA2inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[2] <= 0.99) llop.ai[2] += .01;
                 tvA2.setText(String.format("A2=%f",llop.ai[2]));
                 seekBarA2.setProgress((int)(Math.round(llop.ai[2]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -920,7 +985,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[3] = (double) (progressValue - 100) / 100;
                     tvA3.setText(String.format("A3=%f", llop.ai[3]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -928,27 +993,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA3dec = (Button) findViewById(R.id.buttonA3dec);
+        buttonA3dec = (Button) findViewById(R.id.buttonA3dec);
         buttonA3dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[3] >= -0.99) llop.ai[3] -= .01;
                 tvA3.setText(String.format("A3=%f",llop.ai[3]));
                 seekBarA3.setProgress((int)(Math.round(llop.ai[3]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA3inc = (Button) findViewById(R.id.buttonA3inc);
+        buttonA3inc = (Button) findViewById(R.id.buttonA3inc);
         buttonA3inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[3] <= 0.99) llop.ai[3] += .01;
                 tvA3.setText(String.format("A3=%f",llop.ai[3]));
                 seekBarA3.setProgress((int)(Math.round(llop.ai[3]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -960,7 +1025,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[4] = (double) (progressValue - 100) / 100;
                     tvA4.setText(String.format("A4=%f", llop.ai[4]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -968,27 +1033,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA4dec = (Button) findViewById(R.id.buttonA4dec);
+        buttonA4dec = (Button) findViewById(R.id.buttonA4dec);
         buttonA4dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[4] >= -0.99) llop.ai[4] -= .01;
                 tvA4.setText(String.format("A4=%f",llop.ai[4]));
                 seekBarA4.setProgress((int)(Math.round(llop.ai[4]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA4inc = (Button) findViewById(R.id.buttonA4inc);
+        buttonA4inc = (Button) findViewById(R.id.buttonA4inc);
         buttonA4inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[4] <= 0.99) llop.ai[4] += .01;
                 tvA4.setText(String.format("A4=%f",llop.ai[4]));
                 seekBarA4.setProgress((int)(Math.round(llop.ai[4]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -1000,7 +1065,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[5] = (double) (progressValue - 100) / 100;
                     tvA5.setText(String.format("A5=%f", llop.ai[5]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -1008,27 +1073,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA5dec = (Button) findViewById(R.id.buttonA5dec);
+        buttonA5dec = (Button) findViewById(R.id.buttonA5dec);
         buttonA5dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[5] >= -0.99) llop.ai[5] -= .01;
                 tvA5.setText(String.format("A5=%f",llop.ai[5]));
                 seekBarA5.setProgress((int)(Math.round(llop.ai[5]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA5inc = (Button) findViewById(R.id.buttonA5inc);
+        buttonA5inc = (Button) findViewById(R.id.buttonA5inc);
         buttonA5inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[5] <= 0.99) llop.ai[5] += .01;
                 tvA5.setText(String.format("A5=%f",llop.ai[5]));
                 seekBarA5.setProgress((int)(Math.round(llop.ai[5]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -1040,7 +1105,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[6] = (double) (progressValue - 100) / 100;
                     tvA6.setText(String.format("A6=%f", llop.ai[6]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -1048,27 +1113,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA6dec = (Button) findViewById(R.id.buttonA6dec);
+        buttonA6dec = (Button) findViewById(R.id.buttonA6dec);
         buttonA6dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[6] >= -0.99) llop.ai[6] -= .01;
                 tvA6.setText(String.format("A6=%f",llop.ai[6]));
                 seekBarA6.setProgress((int)(Math.round(llop.ai[6]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA6inc = (Button) findViewById(R.id.buttonA6inc);
+        buttonA6inc = (Button) findViewById(R.id.buttonA6inc);
         buttonA6inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[6] <= 0.99) llop.ai[6] += .01;
                 tvA6.setText(String.format("A6=%f",llop.ai[6]));
                 seekBarA6.setProgress((int)(Math.round(llop.ai[6]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -1080,7 +1145,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[7] = (double) (progressValue - 100) / 100;
                     tvA7.setText(String.format("A7=%f", llop.ai[7]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -1088,27 +1153,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA7dec = (Button) findViewById(R.id.buttonA7dec);
+        buttonA7dec = (Button) findViewById(R.id.buttonA7dec);
         buttonA7dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[7] >= -0.99) llop.ai[7] -= .01;
                 tvA7.setText(String.format("A7=%f",llop.ai[7]));
                 seekBarA7.setProgress((int)(Math.round(llop.ai[7]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA7inc = (Button) findViewById(R.id.buttonA7inc);
+        buttonA7inc = (Button) findViewById(R.id.buttonA7inc);
         buttonA7inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[7] <= 0.99) llop.ai[7] += .01;
                 tvA7.setText(String.format("A7=%f",llop.ai[7]));
                 seekBarA7.setProgress((int)(Math.round(llop.ai[7]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -1120,7 +1185,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[8] = (double) (progressValue - 100) / 100;
                     tvA8.setText(String.format("A8=%f", llop.ai[8]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -1128,27 +1193,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA8dec = (Button) findViewById(R.id.buttonA8dec);
+        buttonA8dec = (Button) findViewById(R.id.buttonA8dec);
         buttonA8dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[8] >= -0.99) llop.ai[8] -= .01;
                 tvA8.setText(String.format("A8=%f",llop.ai[8]));
                 seekBarA8.setProgress((int)(Math.round(llop.ai[8]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA8inc = (Button) findViewById(R.id.buttonA8inc);
+        buttonA8inc = (Button) findViewById(R.id.buttonA8inc);
         buttonA8inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[8] <= 0.99) llop.ai[8] += .01;
                 tvA8.setText(String.format("A8=%f",llop.ai[8]));
                 seekBarA8.setProgress((int)(Math.round(llop.ai[8]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -1160,7 +1225,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[9] = (double) (progressValue - 100) / 100;
                     tvA9.setText(String.format("A9=%f", llop.ai[9]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -1168,27 +1233,27 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA9dec = (Button) findViewById(R.id.buttonA9dec);
+        buttonA9dec = (Button) findViewById(R.id.buttonA9dec);
         buttonA9dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[9] >= -0.99) llop.ai[9] -= .01;
                 tvA9.setText(String.format("A9=%f",llop.ai[9]));
                 seekBarA9.setProgress((int)(Math.round(llop.ai[9]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA9inc = (Button) findViewById(R.id.buttonA9inc);
+        buttonA9inc = (Button) findViewById(R.id.buttonA9inc);
         buttonA9inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[9] <= 0.99) llop.ai[9] += .01;
                 tvA9.setText(String.format("A9=%f",llop.ai[9]));
                 seekBarA9.setProgress((int)(Math.round(llop.ai[9]*100))+100);
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
@@ -1200,7 +1265,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 if (fromUser) {
                     llop.ai[10] = (double) (progressValue - 100) / 100;
                     tvA10.setText(String.format("A10=%f", llop.ai[10]));
-                    //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                    llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
                 }
             }
             @Override
@@ -1208,38 +1273,34 @@ public class FullscreenActivity extends AppCompatActivity {
             }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView();
+                //llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA10dec = (Button) findViewById(R.id.buttonA10dec);
+        buttonA10dec = (Button) findViewById(R.id.buttonA10dec);
         buttonA10dec.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[10] >= -0.99) llop.ai[10] -= .01;
                 tvA10.setText(String.format("A10=%f",llop.ai[10]));
                 seekBarA10.setProgress((int)(Math.round(llop.ai[10]*100))+100);
-                llop.ai2ki();
-                refreshKiOnGui();
-                drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
-        Button buttonA10inc = (Button) findViewById(R.id.buttonA10inc);
+        buttonA10inc = (Button) findViewById(R.id.buttonA10inc);
         buttonA10inc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (llop.ai[10] <= 0.99) llop.ai[10] += .01;
                 tvA10.setText(String.format("A10=%f",llop.ai[10]));
                 seekBarA10.setProgress((int)(Math.round(llop.ai[10]*100))+100);
-                llop.ai2ki();
-                refreshKiOnGui();
-                drawUnitCircleOnImageView();
+                llop.ai2ki(); refreshKiOnGui(); drawUnitCircleOnImageView(true);
             }
         });
 
         refreshKiOnGui();
         refreshAiOnGui();
 
-        Button buttonKiReset = (Button) findViewById(R.id.buttonKiReset);
+        buttonKiReset = (Button) findViewById(R.id.buttonKiReset);
         buttonKiReset.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -1260,14 +1321,13 @@ public class FullscreenActivity extends AppCompatActivity {
                 llop.ki2ai();
                 refreshAiOnGui();
 
-                drawUnitCircleOnImageView();
+                drawUnitCircleOnImageView(true);
 
-                Snackbar.make(view, "Resetting parameters values", Snackbar.LENGTH_SHORT)
-                        .setAction("No action", null).show();
+                Snackbar.make(view, "Resetting parameters values", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
             }
         });
 
-        Button buttonKiRandom = (Button) findViewById(R.id.buttonKiRandom);
+        buttonKiRandom = (Button) findViewById(R.id.buttonKiRandom);
         buttonKiRandom.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -1291,14 +1351,13 @@ public class FullscreenActivity extends AppCompatActivity {
                 llop.ki2ai();
                 refreshAiOnGui();
 
-                drawUnitCircleOnImageView();
+                drawUnitCircleOnImageView(true);
 
-                Snackbar.make(view, "Randomizing parameters values", Snackbar.LENGTH_SHORT)
-                        .setAction("No action", null).show();
+                Snackbar.make(view, "Randomizing parameters values", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
             }
         });
 
-        Button buttonKiMR = (Button) findViewById(R.id.buttonKiMR);
+        buttonKiMR = (Button) findViewById(R.id.buttonKiMR);
         buttonKiMR.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -1326,12 +1385,13 @@ public class FullscreenActivity extends AppCompatActivity {
                 llop.ki2ai();
                 refreshAiOnGui();
 
-                Snackbar.make(view, "Parameters recalled", Snackbar.LENGTH_SHORT)
-                        .setAction("No action", null).show();
+                drawUnitCircleOnImageView(true);
+
+                Snackbar.make(view, "Parameters recalled", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
             }
         });
 
-        Button buttonKiMS = (Button) findViewById(R.id.buttonKiMS);
+        buttonKiMS = (Button) findViewById(R.id.buttonKiMS);
         buttonKiMS.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -1351,12 +1411,11 @@ public class FullscreenActivity extends AppCompatActivity {
                 editor.putFloat("ki9", (float)llop.ki[9]);
                 editor.apply();
 
-                Snackbar.make(view, "Parameters memorized", Snackbar.LENGTH_SHORT)
-                        .setAction("No action", null).show();
+                Snackbar.make(view, "Parameters memorized", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
             }
         });
 
-        Button buttonKiUndo = (Button) findViewById(R.id.buttonKiUndo);
+        buttonKiUndo = (Button) findViewById(R.id.buttonKiUndo);
         buttonKiUndo.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -1368,12 +1427,13 @@ public class FullscreenActivity extends AppCompatActivity {
                 llop.ki2ai();
                 refreshAiOnGui();
 
-                Snackbar.make(view, "Undoing parameters change", Snackbar.LENGTH_SHORT)
-                        .setAction("No action", null).show();
+                drawUnitCircleOnImageView(true);
+
+                Snackbar.make(view, "Undoing parameters change", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
             }
         });
 
-        Button buttonResetFilterMem = (Button) findViewById(R.id.buttonResetFilterMem);
+        buttonResetFilterMem = (Button) findViewById(R.id.buttonResetFilterMem);
         buttonResetFilterMem.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -1387,6 +1447,8 @@ public class FullscreenActivity extends AppCompatActivity {
         registerReceiver(mSigmaDec, new IntentFilter("MAINACTIVIY_SIGMA_DEC"));
         registerReceiver(mSigmaInc, new IntentFilter("MAINACTIVIY_SIGMA_INC"));
         registerReceiver(mDrawFFT, new IntentFilter("MAINACTIVIY_DRAW_FFT"));
+
+        handleAiKiControls(false);
 
         requestRecordAudioPermission();
     }
@@ -1409,6 +1471,32 @@ public class FullscreenActivity extends AppCompatActivity {
         radioButtonUnvoiced.setChecked(true);
     }
 
+    private void handleAiKiControls(boolean enabled){
+        seekBarK0.setEnabled(enabled); seekBarK1.setEnabled(enabled); seekBarK2.setEnabled(enabled); seekBarK3.setEnabled(enabled);
+        seekBarK4.setEnabled(enabled); seekBarK5.setEnabled(enabled); seekBarK6.setEnabled(enabled); seekBarK7.setEnabled(enabled);
+        seekBarK8.setEnabled(enabled); seekBarK9.setEnabled(enabled);
+
+        seekBarA0.setEnabled(enabled); seekBarA1.setEnabled(enabled); seekBarA2.setEnabled(enabled); seekBarA3.setEnabled(enabled);
+        seekBarA4.setEnabled(enabled); seekBarA5.setEnabled(enabled); seekBarA6.setEnabled(enabled); seekBarA7.setEnabled(enabled);
+        seekBarA8.setEnabled(enabled); seekBarA9.setEnabled(enabled); seekBarA10.setEnabled(enabled);
+
+        buttonK0dec.setEnabled(enabled); buttonK1dec.setEnabled(enabled); buttonK2dec.setEnabled(enabled); buttonK3dec.setEnabled(enabled);
+        buttonK4dec.setEnabled(enabled); buttonK5dec.setEnabled(enabled); buttonK6dec.setEnabled(enabled); buttonK7dec.setEnabled(enabled);
+        buttonK8dec.setEnabled(enabled); buttonK9dec.setEnabled(enabled);
+        buttonK0inc.setEnabled(enabled); buttonK1inc.setEnabled(enabled); buttonK2inc.setEnabled(enabled); buttonK3inc.setEnabled(enabled);
+        buttonK4inc.setEnabled(enabled); buttonK5inc.setEnabled(enabled); buttonK6inc.setEnabled(enabled); buttonK7inc.setEnabled(enabled);
+        buttonK8inc.setEnabled(enabled); buttonK9inc.setEnabled(enabled);
+
+        buttonA0dec.setEnabled(enabled); buttonA1dec.setEnabled(enabled); buttonA2dec.setEnabled(enabled); buttonA3dec.setEnabled(enabled);
+        buttonA4dec.setEnabled(enabled); buttonA5dec.setEnabled(enabled); buttonA6dec.setEnabled(enabled); buttonA7dec.setEnabled(enabled);
+        buttonA8dec.setEnabled(enabled); buttonA9dec.setEnabled(enabled); buttonA10dec.setEnabled(enabled);
+        buttonA0inc.setEnabled(enabled); buttonA1inc.setEnabled(enabled); buttonA2inc.setEnabled(enabled); buttonA3inc.setEnabled(enabled);
+        buttonA4inc.setEnabled(enabled); buttonA5inc.setEnabled(enabled); buttonA6inc.setEnabled(enabled); buttonA7inc.setEnabled(enabled);
+        buttonA8inc.setEnabled(enabled); buttonA9inc.setEnabled(enabled); buttonA10inc.setEnabled(enabled);
+
+        buttonKiMR.setEnabled(enabled); buttonKiMS.setEnabled(enabled); buttonKiReset.setEnabled(enabled);
+        buttonKiRandom.setEnabled(enabled); buttonKiUndo.setEnabled(enabled); buttonResetFilterMem.setEnabled(enabled);
+    }
     private void refreshKiOnGui(){
         tvK0.setText(String.format("K0=%f", llop.ki[0]));
         tvK1.setText(String.format("K1=%f", llop.ki[1]));
@@ -1468,29 +1556,7 @@ public class FullscreenActivity extends AppCompatActivity {
             imageViewLpcModel.setImageResource(R.drawable.lpc_uv);
         }
     }
-/*
-    private void drawSwitchOnImageView(boolean voiced){
-        ImageView imageViewLpcModel = findViewById(R.id.imageViewLpcModel);
-        imageViewLpcModel.setImageResource(R.drawable.lpc_v);
-        Paint paint = new Paint();
-        paint.setDither(true);
-        paint.setColor(0xFF000000);  // alpha.r.g.b
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeWidth(5);
-        Bitmap immutableBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.lpc);
-        Bitmap mutableBitmap = immutableBitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(mutableBitmap);
-        if (voiced) {
-            canvas.drawLine(550, 360, 460, 315, paint);
-        } else {
-            canvas.drawLine(550, 360, 460, 405, paint);
-        }
-        canvas.drawBitmap(mutableBitmap, immutableBitmap.getWidth(), immutableBitmap.getHeight(), paint);
-        imageViewLpcModel.setImageDrawable(new BitmapDrawable(getResources(), mutableBitmap));
-    }
-*/
+
     public enum PlotType {
         FFT,
         SPECTROGRAM,
@@ -1524,7 +1590,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
                     case TUBEMODEL:
                         plotType = PlotType.UNITCIRCLE;
-                        drawUnitCircleOnImageView();
+                        drawUnitCircleOnImageView(false);
                         break;
 
                     case UNITCIRCLE:
@@ -1561,7 +1627,7 @@ public class FullscreenActivity extends AppCompatActivity {
             if (vv > vv_max) vv_max = vv;
             if (vv < vv_min) vv_min = vv;
 
-            double vv_shifted = vv + 3.0;
+            double vv_shifted = vv + 4.0;
 
             int h = (int) Math.round(ch * vv_shifted / 10);
             int f = (int) ((double)cw * (double)i * 2.0 / (double)llop.frameSize);
@@ -1636,16 +1702,16 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     private void drawTimeWaveOnImageView(){
-        Paint paint = new Paint();
+        paint = new Paint();
         paint.setDither(true);
         paint.setColor(0xFF006600);  // alpha.r.g.b
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(5);
-        Bitmap immutableBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fft);
-        Bitmap mutableBitmap = immutableBitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(mutableBitmap);
+        immutableBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fft);
+        mutableBitmap = immutableBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        canvas = new Canvas(mutableBitmap);
 
         int xs = immutableBitmap.getWidth();
         int ys = immutableBitmap.getHeight();
@@ -1663,16 +1729,16 @@ public class FullscreenActivity extends AppCompatActivity {
     private void drawTubeModelOnImageView(){
         double Smoins, Splus;
 
-        Paint paint = new Paint();
+        paint = new Paint();
         paint.setDither(true);
         paint.setColor(0xFF000000);  // alpha.r.g.b
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(5);
-        Bitmap immutableBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fft);
-        Bitmap mutableBitmap = immutableBitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(mutableBitmap);
+        immutableBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fft);
+        mutableBitmap = immutableBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        canvas = new Canvas(mutableBitmap);
 
         int xs = immutableBitmap.getWidth();
         int ys = immutableBitmap.getHeight();
@@ -1693,19 +1759,30 @@ public class FullscreenActivity extends AppCompatActivity {
         imageViewPlot.setImageDrawable(new BitmapDrawable(getResources(), mutableBitmap));
     }
 
-    private void drawUnitCircleOnImageView(){
+    private void initBitmapOfGraphicalArea() {
+
+    }
+
+    static boolean pending_drawUnitCircle;
+    private void drawUnitCircleOnImageView(boolean forceUpdate){
         if (plotType != PlotType.UNITCIRCLE) return;
 
-        Paint paint = new Paint();
+        if (pending_drawUnitCircle) return;
+
+        pending_drawUnitCircle = true;
+
+        paint = new Paint();
         paint.setDither(true);
         paint.setColor(0xFF000000);  // alpha.r.g.b
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(5);
-        Bitmap immutableBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fft);
-        Bitmap mutableBitmap = immutableBitmap.copy(Bitmap.Config.ARGB_8888, true);
-        Canvas canvas = new Canvas(mutableBitmap);
+        immutableBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.fft);
+        mutableBitmap = immutableBitmap.copy(Bitmap.Config.ARGB_8888, true);
+        canvas = new Canvas(mutableBitmap);
+
+        //Log.e("LPCLEARN", "drawUnitCircleOnImageView");
 
         int xs = immutableBitmap.getWidth();
         int ys = immutableBitmap.getHeight();
@@ -1717,28 +1794,33 @@ public class FullscreenActivity extends AppCompatActivity {
 
         paint.setColor(0xFFFF0000);
 
-        llop.roots1(); //FIXIT: audio s'arrête à certains moments
+        if (llop.roots1(forceUpdate)) {
 
-        for (int i=0; i<llop.norder; i++){
-            double droot;
-            double xroot;
-            double yroot;
+            for (int i=0; i<llop.norder; i++){
+                double droot;
+                double xroot;
+                double yroot;
 
-            droot =  llop.roots[i].Re * llop.roots[i].Re + llop.roots[i].Im * llop.roots[i].Im;
+                droot =  llop.roots[i].Re * llop.roots[i].Re + llop.roots[i].Im * llop.roots[i].Im;
 
-            xroot =  llop.roots[i].Re/droot;
-            yroot = -llop.roots[i].Im/droot;
+                if (droot != 0) {
+                    xroot = llop.roots[i].Re / droot;
+                    yroot = -llop.roots[i].Im / droot;
 
-            double X = xc-3 + Math.round(R * xroot);
-            double Y = yc-6 - Math.round(R * yroot);
+                    double X = xc - 3 + Math.round(R * xroot);
+                    double Y = yc - 6 - Math.round(R * yroot);
 
-            canvas.drawLine(Math.round(X)-10, Math.round(Y)+10, Math.round(X)+10, Math.round(Y)-10, paint);
-            canvas.drawLine(Math.round(X)-10, Math.round(Y)-10, Math.round(X)+10, Math.round(Y)+10, paint);
+                    canvas.drawLine(Math.round(X) - 10, Math.round(Y) + 10, Math.round(X) + 10, Math.round(Y) - 10, paint);
+                    canvas.drawLine(Math.round(X) - 10, Math.round(Y) - 10, Math.round(X) + 10, Math.round(Y) + 10, paint);
+                }
+            }
+
+            imageViewPlot.setImageDrawable(new BitmapDrawable(getResources(), mutableBitmap));
         }
-
-        imageViewPlot.setImageDrawable(new BitmapDrawable(getResources(), mutableBitmap));
+        pending_drawUnitCircle = false;
     }
 
+    //Event to update graphical area, sent from LLOP object
     private final BroadcastReceiver mDrawFFT = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
@@ -1763,8 +1845,9 @@ public class FullscreenActivity extends AppCompatActivity {
                             break;
 
                         case UNITCIRCLE:
-                            llop.roots1();
-                            drawUnitCircleOnImageView();
+                            //  Only refresh unit circle if we change Ai or Ki.
+                            //  Hence, do not refresh on every new audio frame in Playing mode.
+                            //drawUnitCircleOnImageView(false);
                             break;
                     }
                 }
@@ -1772,21 +1855,23 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     };
 
+    //Event to decrement amplitude, sent from LLOP object
     private final BroadcastReceiver mSigmaDec = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (llop.SIGMA >= 0.01) llop.SIGMA -= .01;
+                    if (llop.SIGMA > 0.01) llop.SIGMA -= .01;
                     tvSigma.setText(String.format("%f", llop.SIGMA));
                     seekBarSigma.setProgress((int)(Math.round(llop.SIGMA*100)));
-                    Log.d("lpclearn", String.format("SIGMA=%f", llop.SIGMA));
+                    //Log.d("lpclearn", String.format("SIGMA=%f", llop.SIGMA));
                 }
             });
         }
     };
 
+    //Event to increment amplitude, sent from LLOP object
     private final BroadcastReceiver mSigmaInc = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, final Intent intent) {
@@ -1796,7 +1881,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     if (llop.SIGMA <= 0.99) llop.SIGMA += .01;
                     tvSigma.setText(String.format("%f", llop.SIGMA));
                     seekBarSigma.setProgress((int)(Math.round(llop.SIGMA*100)));
-                    Log.d("lpclearn", String.format("SIGMA=%f", llop.SIGMA));
+                    //Log.d("lpclearn", String.format("SIGMA=%f", llop.SIGMA));
                 }
             });
         }
@@ -1928,8 +2013,7 @@ public class FullscreenActivity extends AppCompatActivity {
                                 break;
 
                             case UNITCIRCLE:
-                                //llop.roots1();
-                                //drawUnitCircleOnImageView();
+                                drawUnitCircleOnImageView(false);
                                 break;
                         }
                     }
@@ -1942,6 +2026,7 @@ public class FullscreenActivity extends AppCompatActivity {
         new Thread(dispatcher,"Audio Input Dispatcher").start();
     }
 
+    /* DEBUG
     public void DisplayPitchEstimation(PitchDetectionResult pitchResult, AudioEvent e){
         String pitchMsg;
 
@@ -1955,10 +2040,10 @@ public class FullscreenActivity extends AppCompatActivity {
         }
 
         tvFreq.setText(pitchMsg);
-    }
+    }*/
 
     public void LPCLearn_output_start(){
-        //llop.play(); //Useful to auto-start playing on application start
+        //llop.play(); //Useful to auto-start playing while the application is starting
     }
 
     private void toggle() {

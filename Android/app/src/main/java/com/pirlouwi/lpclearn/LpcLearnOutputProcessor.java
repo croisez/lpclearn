@@ -6,6 +6,7 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import java.util.Random;
+import android.util.Log;
 import be.tarsos.dsp.util.fft.FFT;
 import ca.uol.aig.fftpack.Complex1D;
 import ca.uol.aig.fftpack.RealDoubleFFT;
@@ -218,15 +219,22 @@ public class LpcLearnOutputProcessor {
 		for (i = 0; i <= norder; i++) zi[i] = 0.0; //Raz filter memories
 	}
 
-	Complex div_C(Complex c1, Complex c2) {
+	void div_C(Complex c1, Complex c2, Complex result) {
 		double temp;
 		boolean bOverflow;
-		Complex result = new Complex(0.0, 0.0);
 
 		temp = 0.0;
 		bOverflow = false;
 
-		temp = c2.Re * c2.Re + c2.Im * c2.Im;
+		try
+		{
+			temp = c2.Re * c2.Re + c2.Im * c2.Im;
+		}
+		catch(StackOverflowError e)
+		{
+			bOverflow = true;
+			Log.e("LPCLEARN",e.getMessage());
+		}
 
 		if (temp != 0 && !bOverflow) {
 			result.Re = (c1.Re * c2.Re + c1.Im * c2.Im) / temp;
@@ -237,43 +245,32 @@ public class LpcLearnOutputProcessor {
 			result.Re = 0.0;
 			result.Im = 0.0;
 		}
-
-		return result;
 	}
 
-	Complex sqr_C(Complex c) {
-		Complex result = new Complex(0.0, 0.0);
+	void sqr_C(Complex c, Complex result) {
 
 		result.Re = c.Re * c.Re - c.Im * c.Im;
 		result.Im = 2 * c.Re * c.Im;
-
-		return result;
 	}
 
-	Complex polyval_C(double[] A, int N, Complex x) {
+	void polyval_C(double[] A, int N, Complex x, Complex result) {
 
 		double temp;
-		Complex y = new Complex(0.0, 0.0);
 
-		y.Re = A[N];
-		y.Im = 0.0;
+		result.Re = A[N];
+		result.Im = 0.0;
 
 		for (int i = 1; i < N; i++) {
-			temp = y.Re * x.Re - y.Im * x.Im + A[N - i];
-			y.Im = y.Re * x.Im + y.Im * x.Re;
-			y.Re = temp;
+			temp = result.Re * x.Re - result.Im * x.Im + A[N - i];
+			result.Im = result.Re * x.Im + result.Im * x.Re;
+			result.Re = temp;
 		}
-
-		return y;
 	}
 
-	Complex mult_C(Complex c1, Complex c2) {
-		Complex result = new Complex(0.0, 0.0);
+	void mult_C(Complex c1, Complex c2, Complex result) {
 
 		result.Re = c1.Re * c2.Re - c1.Im * c2.Im;
 		result.Im = c2.Re * c1.Im + c1.Re * c2.Im;
-
-		return result;
 	}
 
 	double abs_C(Complex c)
@@ -282,6 +279,7 @@ public class LpcLearnOutputProcessor {
 	}
 
 	double angle_C (Complex c)
+	//Returns the phase angle of ComplexNumber, between -PI and +PI.
 	{
 		double temp;
 		double result = 0.0;
@@ -295,6 +293,8 @@ public class LpcLearnOutputProcessor {
 				result = 0.0;
 			}
 		} else {
+			if (c.Re == 0) Log.e("LPCLEARN","c.Re=0 !");
+
 			temp = Math.atan(c.Im / c.Re);
 			if (c.Re < 0) {
 				if (c.Im < 0) {
@@ -309,9 +309,8 @@ public class LpcLearnOutputProcessor {
 		return result;
 	}
 
-	Complex sqrt_C(Complex c)
+	void sqrt_C(Complex c, Complex result)
 	{
-		Complex result = new Complex(0.0, 0.0);
 		double ang;
 		double mag;
 
@@ -319,78 +318,77 @@ public class LpcLearnOutputProcessor {
 		ang = angle_C(c)/2;
 		result.Re = mag * Math.cos(ang);
 		result.Im = mag * Math.sin(ang);
-
-		return result;
 	}
 
-	Complex rac1(int N, Complex x)
+	void rac1(int N, Complex x, Complex result)
 	{
 		Complex V = new Complex(0.0, 0.0);
 		Complex temp1 = new Complex(0.0, 0.0);
 		Complex temp2 = new Complex(0.0, 0.0);
-		Complex sum = new Complex(0.0, 0.0);
 
 		V.Re = 1.0;
 		V.Im = 0.0;
-		sum.Re = 0.0; sum.Im = 0.0;
+		result.Re = 0.0; result.Im = 0.0;
 
-		for (int i=0; i<N; i++) {
+		for (int i=0; i <= N-1; i++) {
 			temp1.Re = x.Re - roots[i].Re;
 			temp1.Im = x.Im - roots[i].Im;
-			temp2 = div_C(V,temp1);
-			sum.Re = sum.Re + temp2.Re;
-			sum.Im = sum.Im + temp2.Im;
+			div_C(V,temp1, temp2);
+			result.Re = result.Re + temp2.Re;
+			result.Im = result.Im + temp2.Im;
 		}
-
-		return sum;
 	}
 
-	Complex rac2(int N, Complex x) {
+	void rac2(int N, Complex x, Complex result) {
 		Complex V = new Complex(0.0, 0.0);
 		Complex temp1 = new Complex(0.0, 0.0);
 		Complex temp2 = new Complex(0.0, 0.0);
-		Complex sum = new Complex(0.0, 0.0);
 
 		V.Re = 1.0;
 		V.Im = 0.0;
-		sum.Re = 0.0;
-		sum.Im = 0.0;
+		result.Re = 0.0;
+		result.Im = 0.0;
 
-		for (int i=0; i<N; i++)
+		for (int i=0; i <= N-1; i++)
 		{
 			temp1.Re = x.Re - roots[i].Re;
 			temp1.Im = x.Im - roots[i].Im;
-			temp2 = div_C(V, temp1);
-			temp1 = sqr_C(temp2);
-			sum.Re = sum.Re + temp1.Re;
-			sum.Im = sum.Im + temp1.Im;
+			div_C(V, temp1, temp2);
+			sqr_C(temp2, temp1);
+			result.Re = result.Re + temp1.Re;
+			result.Im = result.Im + temp1.Im;
 		}
-
-		return sum;
 	}
 
-	void roots1() {
-		double[] A = new double[norder+1];
-		for (int i=0; i<norder+1; i++) A[i] = ai[i];
+	byte roots1_Cnt = 0;
+	double DF;
+	Complex F = new Complex(0.0, 0.0); //polyval_C
+	Complex Z = new Complex(0.0, 0.0); //div_C
+	Complex Z1 = new Complex(0.0, 0.0); //rac1
+	Complex Z2 = new Complex(0.0, 0.0); //rac2
+	Complex U = new Complex(0.0, 0.0); //mult_C
+	Complex K1 = new Complex(0.0, 0.0); //polyval_C
+	Complex K2 = new Complex(0.0, 0.0); //polyval_C
 
-		double DF;
-		Complex F;
-		Complex X = new Complex(0.0, 0.0);
-		Complex XP = new Complex(0.0, 0.0);
-		Complex Z;
-		Complex H = new Complex(0.0, 0.0);
-		Complex Z1;
-		Complex Z2;
-		Complex U;
-		Complex V = new Complex(0.0, 0.0);
-		Complex W = new Complex(0.0, 0.0);
-		Complex K1;
-		Complex K2;
-		double[] A1 = new double[norder];
-		double[] A2 = new double[norder];
+	double[] A = new double[norder+1];
+	Complex X = new Complex(0.0, 0.0);
+	Complex XP = new Complex(0.0, 0.0);
+	Complex H = new Complex(0.0, 0.0);
+	Complex V = new Complex(0.0, 0.0); //sqr_C
+	Complex W = new Complex(0.0, 0.0);
+	double[] A1 = new double[norder];
+	double[] A2 = new double[norder];
 
-		for (int i = 1; i < norder + 1; i++) A1[i - 1] = i * A[i];
-		for (int i = 2; i < norder + 1; i++) A2[i - 2] = i * (i - 1) * A[i];
+	boolean roots1(boolean forceUpdate) {
+		//Computes the complex roots of a real coefficients polynomial
+		//A(x)=A[0]+A[1] x[1]+...+A[Order] x[i]^Order
+		//method : LAGUERRE.
+
+		if (! forceUpdate && roots1_Cnt++ % 20 != 0) return false;
+
+		for (int i = 0; i < norder+1; i++) A[i] = ai[i];
+		for (int i = 1; i <= norder; i++)  A1[i - 1] = i * A[i];
+		for (int i = 2; i <= norder; i++)  A2[i - 2] = i * (i - 1) * A[i];
 
 		int K = 0;
 		while (K < norder) {
@@ -398,55 +396,48 @@ public class LpcLearnOutputProcessor {
 			X.Im = 1;
 			DF = 1.0; // Initialisation pour entrer dans la boucle
 			while (DF >= norder * 1E-06) {
-				F = polyval_C(A, norder, X);
-				K1 = polyval_C(A1, norder - 1, X);
-				Z1 = rac1(K, X);
+				polyval_C(A, norder, X, F);
+				polyval_C(A1, norder - 1, X, K1);
+				rac1(K, X, Z1);
 
-				U = mult_C(F, Z1);
+				mult_C(F, Z1, U);
 				V.Re = K1.Re;
 				V.Im = K1.Im;
 				K1.Re = V.Re - U.Re;
 				K1.Im = V.Im - U.Im;
-				K2 = polyval_C(A2, norder - 2, X);
-				Z2 = rac2(K, X);
+				polyval_C(A2, norder - 2, X, K2);
+				rac2(K, X, Z2);
 
-				U = mult_C(Z1, V);
+				mult_C(Z1, V, U);
 				K2.Re = K2.Re - 2 * U.Re;
 				K2.Im = K2.Im - 2 * U.Im;
-				U = mult_C(F, Z2);
+				mult_C(F, Z2, U);
 				K2.Re = K2.Re + U.Re;
 				K2.Im = K2.Im + U.Im;
-				V = sqr_C(Z1);
-				U = mult_C(V, F);
+				sqr_C(Z1, V);
+				mult_C(V, F, U);
 				K2.Re = K2.Re + U.Re;
 				K2.Im = K2.Im + U.Im;
-				H.Re = (norder - 1) * (norder - 1) * (K1.Re * K1.Re - K1.Im * K1.Im)
-						- norder * (norder - 1) * (F.Re * K2.Re - F.Im * K2.Im);
-				H.Im = (norder - 1) * (norder - 1) * 2 * K1.Re * K1.Im
-						- norder * (norder - 1) * (F.Re * K2.Im + F.Im * K2.Re);
-				H = sqrt_C(H);
+				H.Re = (norder - 1) * (norder - 1) * (K1.Re * K1.Re - K1.Im * K1.Im) - norder * (norder - 1) * (F.Re * K2.Re - F.Im * K2.Im);
+				H.Im = (norder - 1) * (norder - 1) * 2 * K1.Re * K1.Im - norder * (norder - 1) * (F.Re * K2.Im + F.Im * K2.Re);
+				sqrt_C(H, H);
 				XP.Re = K1.Re + H.Re;
 				XP.Im = K1.Im + H.Im;
 				W.Re  = K1.Re - H.Re;
 				W.Im  = K1.Im - H.Im;
-				if ((W.Re * W.Re + W.Im * W.Im) > (XP.Re * XP.Re + XP.Im * XP.Im)) {
-					XP.Re = W.Re;
-					XP.Im = W.Im;
-				}
-				Z = div_C(F, XP);
+				if ((W.Re * W.Re + W.Im * W.Im) > (XP.Re * XP.Re + XP.Im * XP.Im)) { XP.Re = W.Re; XP.Im = W.Im; }
+				div_C(F, XP, Z);
 				X.Re = X.Re - norder * Z.Re;
 				X.Im = X.Im - norder * Z.Im;
 				DF = Math.sqrt(Z.Re * Z.Re + Z.Im * Z.Im);
 			}
 			roots[K].Re = X.Re;
 			roots[K].Im = X.Im;
-			if (Math.abs(X.Im) > 1.e-10) {
-				K++;
-				roots[K].Re = X.Re;
-				roots[K].Im = -X.Im;
-			}
+			if (Math.abs(X.Im) > 1.e-10) { K++; roots[K].Re = X.Re; roots[K].Im = -X.Im; }
 			K++;
 		}
+
+		return true;
 	}
 
 	void recallUndo2Ki() {
@@ -501,9 +492,14 @@ public class LpcLearnOutputProcessor {
 		ki_undo[9] = ki_swap[9];
 	}
 
+	static boolean pending_ai2ki;
 	void ai2ki() {
 		//Computes PARCOR coefficients ki(0..Order-1) , from the
 		//Prediction coefficients ai(0..Order).
+
+		if (pending_ai2ki) return;
+
+		pending_ai2ki = true;
 		double[] aint = new double[norder+1];
 
 		for (int i=0; i<norder; i++) ki[i] = ai[i+1];
@@ -513,12 +509,18 @@ public class LpcLearnOutputProcessor {
 			for (int i=1; i<m; i++)
 			    ki[i - 1] = aint[i];
 		}
+		pending_ai2ki = false;
 	}
 
+	static boolean pending_ki2ai;
 	void ki2ai()
 	{
 		//Computes the Prediction coefficients ai(0..Order) from the
 		//PARCOR coefficients ki(0..Order - 1).
+
+		if (pending_ki2ai) return;
+
+		pending_ki2ai = true;
 		double[] aint = new double[norder+1];
 
 		aint[0] = 1.0;
@@ -529,6 +531,7 @@ public class LpcLearnOutputProcessor {
 			ai[m] = ki[m - 1];
 			for (int i=1; i<norder+1; i++) aint[i] = ai[i];
 		}
+		pending_ki2ai = false;
 	}
 
 	Runnable m_sine = new Runnable() {
