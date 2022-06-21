@@ -34,10 +34,10 @@ public class LpcLearnOutputProcessor {
 	public double[] ai = new double[norder + 1];
 	private double[] zi = new double[norder + 1];
 	private double[] kimem = new double[norder];
-	public double[] x = new double[m_sampleRate];
-	public double[] y = new double[m_sampleRate];
-	public double[] y_in = new double[frameSize];
-	public Complex1D y_out = new Complex1D();
+	public double[] audioOut = new double[m_sampleRate];
+	public double[] audioOutLattice = new double[m_sampleRate];
+	public double[] audioOutLatticeSubset = new double[frameSize];
+	public Complex1D audioOutLatticeSubsetFFT = new Complex1D();
 	private double[] ham = new double[frameSize];
 
 	private double[] vdouble1 = new double[1024]; //big frame
@@ -56,6 +56,7 @@ public class LpcLearnOutputProcessor {
 	public double SIGMA = 0.05;
 	public boolean bAGC = false;
 	private Context _context;
+	public boolean bBypassFilterIIRLattice = false;
 
 
 	public LpcLearnOutputProcessor(Context context) {
@@ -89,8 +90,8 @@ public class LpcLearnOutputProcessor {
 		ki[9] = -0.1;*/
 
 		for (int i = 0; i < frameSize; i++) {
-			x[i] = 0.0;
-			y[i] = 0.0;
+			audioOut[i] = 0.0;
+			audioOutLattice[i] = 0.0;
 		}
 	}
 
@@ -119,41 +120,49 @@ public class LpcLearnOutputProcessor {
 			RealDoubleFFT realDoubleFFT = new RealDoubleFFT(frameSize);
 
 			while (!m_stop) {
-				//if (m_pause) break;
 				for (int i = 0; i < frameSize; i++) {
 					if (bVoiced) {
 						iphase++;
 						if (pitchVal * (double) iphase >= m_sampleRate) iphase = 0;
-						x[i] = 0;
-						if (iphase == 0) x[i] = 1;
+						audioOut[i] = 0;
+						if (iphase == 0) audioOut[i] = 1;
 						//x[i] = Math.sin(2 * Math.PI * pitchVal * iphase / m_sampleRate);
 					} else {
-						x[i] = rnd.nextDouble() * 2 - 1;
+						audioOut[i] = rnd.nextDouble() * 2 - 1;
 					}
 
-					//x[i] *= ham[i];
+					//audioOut[i] *= ham[i];
 				}
 
-				//Applies LPC model on this frame
-				Filter_IIR_lattice();
+				if (bBypassFilterIIRLattice) {
+					for (int i = 0; i < frameSize; i++) {
+						audioOutLattice[i] = audioOut[i];
+					}
+				} else {
+					//RazFilterMemories();
+					Filter_IIR_lattice(audioOut, audioOutLattice); //Applies LPC model on this frame
 
-				System.arraycopy(y, 0, y_in, 0, frameSize); //Subset of y => y_fft, size frameSize.
+					//--Désaccentuation 1+alphaZ^-1, alpha=0.95
+					//for (int i = 1; i < frameSize; i++) audioOutLattice[i] = audioOutLattice[i] + 0.95f * audioOutLattice[i-1];
+				}
+
+				System.arraycopy(audioOutLattice, 0, audioOutLatticeSubset, 0, frameSize); //Subset of y => y_fft, size frameSize.
 
 				for (int i = 0; i < frameSize; i++) {
-					y_in[i] *= ham[i];
+					audioOutLatticeSubset[i] *= ham[i];
 				}
 
-				realDoubleFFT.ft(y_in, y_out);
+				realDoubleFFT.ft(audioOutLatticeSubset, audioOutLatticeSubsetFFT);
 				_context.sendBroadcast(new Intent("MAINACTIVIY_DRAW_FFT"));
 
 				double max = 0;
 				for (int i = 0; i < frameSize; i++) {
-					audioBuf[i] = (short) Math.round(32767 * y[i]);
+					audioBuf[i] = (short) Math.round(32767 * audioOutLattice[i]);
 					if (bAGC) {
-						if (max < Math.abs(Math.round(32767 * y[i]))) {
-							max = Math.abs(Math.round(32767 * y[i]));
+						if (max < Math.abs(Math.round(32767 * audioOutLattice[i]))) {
+							max = Math.abs(Math.round(32767 * audioOutLattice[i]));
 						}
-						if ((Math.abs(Math.round(32767 * y[i])) > 32780)) {
+						if ((Math.abs(Math.round(32767 * audioOutLattice[i])) > 32780)) {
 							_context.sendBroadcast(new Intent("MAINACTIVIY_SIGMA_DEC"));
 						}
 					}
@@ -194,17 +203,17 @@ public class LpcLearnOutputProcessor {
        It should have a dimension = DenOrder.
        It is set to the final conditions on return.
 	 */
-	void Filter_IIR_lattice() {
+	void Filter_IIR_lattice(double[] in, double[] out) {
 		double x1, y1;
 		double[] y2 = new double[norder];
 
 		for (int i = 0; i < frameSize; i++) {
-			x1 = x[i];
+			x1 = in[i];
 			for (int j = 0; j < norder; j++) {
 				x1 = x1 - ki[j] * zi[j];
 				y2[j] = x1;
 			}
-			y[i] = SIGMA * x1;
+			out[i] = SIGMA * x1;
 			for (int j = norder - 1; j > 0; j--) {
 				y1 = zi[j] + ki[j] * y2[j];
 				zi[j] = x1;

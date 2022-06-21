@@ -223,6 +223,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private Button buttonFreqdec;
     private Button buttonFreqinc;
     private SeekBar seekBarFreq;
+    private int MaxFreqValue = 500;
     private TextView tvFreq;
     private RadioButton radioButtonVoiced;
     private RadioButton radioButtonUnvoiced;
@@ -283,36 +284,49 @@ public class FullscreenActivity extends AppCompatActivity {
         imageButtonPlay.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (llop.m_stop) {
+                if (llop.m_stop && ! llop.bBypassFilterIIRLattice) {
+                    llop.bBypassFilterIIRLattice = true;
                     llop.play();
                     imageButtonRecord.setEnabled(false);
                     imageButtonRecord.setImageResource(R.drawable.iconrecdis);
                     imageButtonPlay.setImageResource(R.drawable.iconstopplay);
                     handleAiKiControls(true);
-                } else {
+                    Snackbar.make(view, "Show excitation pulses (debug)", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
+                } else if (! llop.m_stop && llop.bBypassFilterIIRLattice) {
+                    llop.bBypassFilterIIRLattice = false;
+                    Snackbar.make(view, "Start playing mode (apply IIR filter)", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
+                } else if (! llop.m_stop) {
                     llop.stop();
                     imageButtonRecord.setEnabled(true);
                     imageButtonRecord.setImageResource(R.drawable.iconrec);
                     imageButtonPlay.setImageResource(R.drawable.iconplay);
                     handleAiKiControls(false);
+                    Snackbar.make(view, "Stop playing mode", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
                 }
             }
         });
         imageButtonRecord.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (llip.m_stop) {
+                if (llip.m_stop && ! llip.isTest1000HzSin) {
+                    llip.isTest1000HzSin = true;
                     llip.m_stop = false;
                     imageButtonPlay.setEnabled(false);
                     imageButtonPlay.setImageResource(R.drawable.iconplaydis);
                     imageButtonRecord.setImageResource(R.drawable.iconstoprec);
                     handleAiKiControls(false);
-                } else {
+                    Snackbar.make(view, "Test mode @ 1000 Hz (debug)", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
+                } else if (! llip.m_stop && llip.isTest1000HzSin) {
+                    llip.isTest1000HzSin = false;
+                    Snackbar.make(view, "Start live recording analysis", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
+                } else if (! llip.m_stop && ! llip.isTest1000HzSin) {
+                    llip.isTest1000HzSin = false;
                     llip.m_stop = true;
                     imageButtonPlay.setEnabled(true);
                     imageButtonPlay.setImageResource(R.drawable.iconplay);
                     imageButtonRecord.setImageResource(R.drawable.iconrec);
                     handleAiKiControls(false);
+                    Snackbar.make(view, "Stop live recording analysis", Snackbar.LENGTH_SHORT).setAction("No action", null).show();
                 }
             }
         });
@@ -321,6 +335,7 @@ public class FullscreenActivity extends AppCompatActivity {
         tvSigma.setText(String.format("%f",llop.SIGMA));
 
         seekBarFreq = findViewById(R.id.seekBarFreq);
+        seekBarFreq.setMax(MaxFreqValue);
         seekBarFreq.setProgress((int)llop.pitchVal);
         seekBarFreq.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -348,7 +363,7 @@ public class FullscreenActivity extends AppCompatActivity {
         buttonFreqinc.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                if (llop.pitchVal <= 300.0) llop.pitchVal += 1;
+                if (llop.pitchVal <= MaxFreqValue * 1.0) llop.pitchVal += 1.0;
                 tvFreq.setText(String.format("%f",llop.pitchVal));
                 seekBarFreq.setProgress((int)llop.pitchVal);
             }
@@ -1472,11 +1487,14 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     private void handleAiKiControls(boolean enabled){
+        seekBarSigma.setEnabled(enabled);
+        seekBarFreq.setEnabled(enabled);
+
         seekBarK0.setEnabled(enabled); seekBarK1.setEnabled(enabled); seekBarK2.setEnabled(enabled); seekBarK3.setEnabled(enabled);
         seekBarK4.setEnabled(enabled); seekBarK5.setEnabled(enabled); seekBarK6.setEnabled(enabled); seekBarK7.setEnabled(enabled);
         seekBarK8.setEnabled(enabled); seekBarK9.setEnabled(enabled);
 
-        seekBarA0.setEnabled(enabled); seekBarA1.setEnabled(enabled); seekBarA2.setEnabled(enabled); seekBarA3.setEnabled(enabled);
+        seekBarA0.setEnabled(false); seekBarA1.setEnabled(enabled); seekBarA2.setEnabled(enabled); seekBarA3.setEnabled(enabled);
         seekBarA4.setEnabled(enabled); seekBarA5.setEnabled(enabled); seekBarA6.setEnabled(enabled); seekBarA7.setEnabled(enabled);
         seekBarA8.setEnabled(enabled); seekBarA9.setEnabled(enabled); seekBarA10.setEnabled(enabled);
 
@@ -1487,10 +1505,10 @@ public class FullscreenActivity extends AppCompatActivity {
         buttonK4inc.setEnabled(enabled); buttonK5inc.setEnabled(enabled); buttonK6inc.setEnabled(enabled); buttonK7inc.setEnabled(enabled);
         buttonK8inc.setEnabled(enabled); buttonK9inc.setEnabled(enabled);
 
-        buttonA0dec.setEnabled(enabled); buttonA1dec.setEnabled(enabled); buttonA2dec.setEnabled(enabled); buttonA3dec.setEnabled(enabled);
+        buttonA0dec.setEnabled(false); buttonA1dec.setEnabled(enabled); buttonA2dec.setEnabled(enabled); buttonA3dec.setEnabled(enabled);
         buttonA4dec.setEnabled(enabled); buttonA5dec.setEnabled(enabled); buttonA6dec.setEnabled(enabled); buttonA7dec.setEnabled(enabled);
         buttonA8dec.setEnabled(enabled); buttonA9dec.setEnabled(enabled); buttonA10dec.setEnabled(enabled);
-        buttonA0inc.setEnabled(enabled); buttonA1inc.setEnabled(enabled); buttonA2inc.setEnabled(enabled); buttonA3inc.setEnabled(enabled);
+        buttonA0inc.setEnabled(false); buttonA1inc.setEnabled(enabled); buttonA2inc.setEnabled(enabled); buttonA3inc.setEnabled(enabled);
         buttonA4inc.setEnabled(enabled); buttonA5inc.setEnabled(enabled); buttonA6inc.setEnabled(enabled); buttonA7inc.setEnabled(enabled);
         buttonA8inc.setEnabled(enabled); buttonA9inc.setEnabled(enabled); buttonA10inc.setEnabled(enabled);
 
@@ -1604,7 +1622,7 @@ public class FullscreenActivity extends AppCompatActivity {
     double vv_max = -10.0;
     double vv_min = 10.0;
 
-    private void drawFFTOnImageView(){
+    private void drawFFTOnImageView(boolean drawFFT, boolean drawImpulseResponse){
         Paint paint = new Paint();
         paint.setDither(true);
         paint.setColor(0xFF0000FF);  // alpha.r.g.b
@@ -1619,19 +1637,37 @@ public class FullscreenActivity extends AppCompatActivity {
         int cw = canvas.getWidth();
         int ch = canvas.getHeight();
 
-        for (int i=0; i<llop.frameSize/2; i++){
-            double v = Math.sqrt( llop.y_out.x[i] * llop.y_out.x[i] + llop.y_out.y[i] * llop.y_out.y[i] );
-            double vv = 0.0;
-            if (v != 0 ) vv = Math.log(v);
+        if (drawFFT) {
+            for (int i = 0; i < llop.frameSize / 2; i++) {
+                double v = Math.sqrt(llop.audioOutLatticeSubsetFFT.x[i] * llop.audioOutLatticeSubsetFFT.x[i] +
+                                     llop.audioOutLatticeSubsetFFT.y[i] * llop.audioOutLatticeSubsetFFT.y[i]);
+                double vv = 0.0;
+                if (v != 0) vv = Math.log(v);
 
-            if (vv > vv_max) vv_max = vv;
-            if (vv < vv_min) vv_min = vv;
+                if (vv > vv_max) vv_max = vv;
+                if (vv < vv_min) vv_min = vv;
 
-            double vv_shifted = vv + 4.0;
+                int h = (int) Math.round(ch * (vv + 4.0) / 10);
+                int f = (int) ((double) cw * (double) i * 2.0 / (double) llop.frameSize);
+                canvas.drawLine(f, ch, f, ch - h, paint);
+            }
+        }
 
-            int h = (int) Math.round(ch * vv_shifted / 10);
-            int f = (int) ((double)cw * (double)i * 2.0 / (double)llop.frameSize);
-            canvas.drawLine(f, ch, f, ch - h, paint);
+        if (drawImpulseResponse) {
+            paint.setColor(0xFFFF0000);  // alpha.r.g.b
+            for (int i = 0; i < llop.frameSize / 2; i++) {
+                double v = Math.sqrt(llip.impulseResponseFFT.x[i] * llip.impulseResponseFFT.x[i] +
+                                     llip.impulseResponseFFT.y[i] * llip.impulseResponseFFT.y[i]);
+                double vv = 0.0;
+                if (v != 0) vv = Math.log(v) + Math.log(llop.SIGMA * 20);
+
+                if (vv > vv_max) vv_max = vv;
+                if (vv < vv_min) vv_min = vv;
+
+                int h = (int) Math.round(ch * (vv + 4.0) / 10);
+                int f = (int) ((double) cw * (double) i * 2.0 / (double) llop.frameSize);
+                canvas.drawLine(f, ch - h - 1, f, ch - h, paint);
+            }
         }
 
         canvas.drawBitmap(mutableBitmap, immutableBitmap.getWidth(), immutableBitmap.getHeight(), paint);
@@ -1661,7 +1697,8 @@ public class FullscreenActivity extends AppCompatActivity {
             initSpectro = false;
         }
         for (int i=0; i<llop.frameSize/2; i++){
-            double v = Math.sqrt( llop.y_out.x[i] * llop.y_out.x[i] + llop.y_out.y[i] * llop.y_out.y[i] );
+            double v = Math.sqrt(llop.audioOutLatticeSubsetFFT.x[i] * llop.audioOutLatticeSubsetFFT.x[i] +
+                                 llop.audioOutLatticeSubsetFFT.y[i] * llop.audioOutLatticeSubsetFFT.y[i]);
             double vv = 0.0;
             if (v != 0 ) {
                 vv = Math.log(v);
@@ -1718,8 +1755,8 @@ public class FullscreenActivity extends AppCompatActivity {
 
         for (int i=1; i<llop.frameSize; i++){
             canvas.drawLine(
-                    i * xs / llop.frameSize,(ys/2)-Math.round(llop.y[i-1]*ys*0.4),
-                    i * xs / llop.frameSize,(ys/2)-Math.round(llop.y[i]*ys*0.4),
+                    i * xs / llop.frameSize,(ys/2) - Math.round(llop.audioOutLatticeSubset[i-1] * ys * 0.4),
+                    i * xs / llop.frameSize,(ys/2) - Math.round(llop.audioOutLatticeSubset[i]   * ys * 0.4),
                     paint);
         }
 
@@ -1829,7 +1866,7 @@ public class FullscreenActivity extends AppCompatActivity {
                 public void run() {
                     switch(plotType){
                         case FFT:
-                            drawFFTOnImageView();
+                            drawFFTOnImageView(true,false);
                             break;
 
                         case SPECTROGRAM:
@@ -1963,41 +2000,40 @@ public class FullscreenActivity extends AppCompatActivity {
             @Override
             public void handlePitch(
                     final double SigmaAutocorr,
+                    final double[] lpc,
                     final double[] parcor,
                     final float[] audioFloatBuffer,
-                    final Complex1D y_out,
+                    final Complex1D audioOutLatticeSubsetFFT,
                     final PitchDetectionResult pitchResult,
                     final AudioEvent e) {
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //TextView text = (TextView) findViewById(R.id.tvPitch);
-                        //text.setText(String.format("min=%f max=%f", lpc_array[0], lpc_array[1]));
+                        llop.SIGMA = SigmaAutocorr;
+                        for (int i=0; i < llop.norder + 1; i++) llop.ai[i] = lpc[i];
                         for (int i=0; i < llop.norder; i++) llop.ki[i] = parcor[i];
-                        for (int i=0; i < llop.frameSize; i++) llop.y[i] = (double) audioFloatBuffer[i];
-                        llop.y_out = y_out;
+                        for (int i=0; i < llop.frameSize; i++) llop.audioOutLatticeSubset[i] = (double) audioFloatBuffer[i];
+                        llop.audioOutLatticeSubsetFFT = audioOutLatticeSubsetFFT;
 
-                        refreshKiOnGui();
-                        llop.ki2ai();
-                        refreshAiOnGui();
+                        seekBarSigma.setProgress((int)(Math.round(llop.SIGMA*100)));
+                        refreshAiOnGui(); refreshKiOnGui();
+
 
                         //DisplayPitchEstimation(pitchResult, e);
-                        if (pitchResult.isPitched()) {
-                            //Voiced case
+                        if (pitchResult.isPitched()) { //Voiced case
                             llop.pitchVal = pitchResult.getPitch();
                             seekBarFreq.setProgress((int)llop.pitchVal);
                             tvFreq.setText(String.format("%f Hz", llop.pitchVal));
                             SelectVoicedMode();
-                        } else {
-                            //Unvoiced case
+                        } else { //Unvoiced case
                             llop.bVoiced = false;
                             SelectUnvoicedMode();
                         }
 
                         switch(plotType){
                             case FFT:
-                                drawFFTOnImageView();
+                                drawFFTOnImageView(true,true);
                                 break;
 
                             case SPECTROGRAM:
